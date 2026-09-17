@@ -4,7 +4,9 @@ import BlogPost from "../../layouts/BlogPost.astro";
 import { render } from "astro:content";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = (await getCollection("blog")).filter(
+    (post) => !post.data.draft,
+  );
   return posts.map((post) => ({
     params: { slug: post.id },
     props: post,
@@ -14,8 +16,18 @@ type Props = CollectionEntry<"blog">;
 
 const post = Astro.props;
 const { Content } = await render(post);
+const permalink = Astro.site
+  ? `${Astro.site.href}blog/${post.id}/`
+  : `/blog/${post.id}/`;
 ---
 
-<BlogPost {...post.data}>
+<BlogPost
+  title={post.data.title}
+  description={post.data.description}
+  permalink={permalink}
+  pubDate={post.data.pubDate}
+  updatedDate={post.data.updatedDate}
+  tags={post.data.tags}
+>
   <Content />
 </BlogPost>

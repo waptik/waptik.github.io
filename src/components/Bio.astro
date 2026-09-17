@@ -1,0 +1,42 @@
+---
+import { AUTHOR, SOCIAL } from "../config";
+---
+
+<div>
+  <img src={AUTHOR.avatar} alt={AUTHOR.name} />
+  <p>
+    Hi, I'm <strong>{AUTHOR.name}</strong>. {AUTHOR.bio}
+    You can follow me on {
+      SOCIAL.map((social, i) => (
+        <span>
+          <a href={social.href} target="_blank">
+            {social.label}
+          </a>
+          {i < SOCIAL.length - 1 && <span>, </span>}
+        </span>
+      ))
+    }.
+  </p>
+</div>
+
+<style>
+  div {
+    align-items: center;
+    display: flex;
+  }
+
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: block;
+    margin-right: 20px;
+    object-fit: cover;
+    object-position: center top;
+    aspect-ratio: 1/1;
+  }
+
+  p {
+    font-size: 1.125rem;
+  }
+</style>

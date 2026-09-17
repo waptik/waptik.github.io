@@ -1,0 +1,203 @@
+---
+const { current = "" } = Astro.props;
+---
+
+<style>
+  nav {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    font-family: var(--font-family-sans);
+    font-weight: 700;
+    justify-content: flex-end;
+    text-transform: uppercase;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    padding: 10px 5px;
+    display: block;
+    position: relative;
+    margin-left: 20px;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  a:not(.selected) {
+    opacity: 0.7;
+  }
+
+  a::before {
+    content: "";
+    position: absolute;
+    transition: transform 0.3s ease;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--text-secondary);
+    transform: scaleX(0);
+  }
+
+  a:hover::before,
+  .selected::before {
+    transform: scaleX(1);
+  }
+
+  .selected::before {
+    background: var(--primary-color);
+  }
+
+  .theme-toggle-container {
+    width: 75px;
+  }
+
+  @media screen and (max-width: 520px) {
+    .theme-toggle-container {
+      margin-right: 1em;
+    }
+  }
+</style>
+
+<nav>
+  <a class={current === "" ? "selected" : ""} href="/">home</a>
+  <a class={current === "about" ? "selected" : ""} href="/about">about</a>
+  <a class={current === "blog" ? "selected" : ""} href="/blog">blog</a>
+  <div class="theme-toggle-container">
+    <div class="theme-toggle" id="theme-toggle">
+      <label class="theme-label" data-theme="light">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.14zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <input type="radio" name="theme-toggle" value="light" />
+      </label>
+      <label class="theme-label" data-theme="dark">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+          ></path>
+        </svg>
+        <input type="radio" name="theme-toggle" value="dark" />
+      </label>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const themeToggle = document.getElementById("theme-toggle");
+  if (!themeToggle) {
+    // Early exit if element doesn't exist
+  } else {
+    const themeLabels = themeToggle.querySelectorAll(".theme-label");
+    const inputs = themeToggle.querySelectorAll("input");
+
+    // Set initial state
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    const currentTheme = savedTheme || (prefersDark ? "dark" : "light");
+
+    if (currentTheme === "dark") {
+      document.documentElement.classList.add("theme-dark");
+    } else {
+      document.documentElement.classList.remove("theme-dark");
+    }
+
+    // Set initial checked state
+    inputs.forEach((input) => {
+      if (input.value === currentTheme) {
+        input.checked = true;
+        input.parentElement?.classList.add("checked");
+      }
+    });
+
+    // Handle theme changes
+    inputs.forEach((input) => {
+      input.addEventListener("change", (e) => {
+        const target = e.target as HTMLInputElement;
+        const theme = target.value;
+        localStorage.setItem("theme", theme);
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("theme-dark");
+        } else {
+          document.documentElement.classList.remove("theme-dark");
+        }
+
+        // Update checked classes
+        themeLabels.forEach((label) => {
+          const labelEl = label as HTMLElement;
+          if (labelEl.dataset.theme === theme) {
+            labelEl.classList.add("checked");
+          } else {
+            labelEl.classList.remove("checked");
+          }
+        });
+      });
+    });
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    padding: 0.33em 0.67em;
+    padding-top: 8px;
+    margin-left: 10px;
+    gap: 0.6em;
+    border-radius: 99em;
+    background-color: #f0f0f0;
+  }
+
+  .theme-label {
+    color: #555;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  .theme-label.checked {
+    color: var(--primary-color);
+    opacity: 1;
+  }
+
+  input[name="theme-toggle"] {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  :root.theme-dark .theme-toggle {
+    background-color: #333;
+  }
+
+  :root.theme-dark .theme-label {
+    color: #ccc;
+  }
+</style>

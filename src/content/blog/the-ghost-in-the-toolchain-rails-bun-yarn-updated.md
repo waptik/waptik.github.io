@@ -1,14 +1,18 @@
 ---
-title: "The Ghost in the Toolchain: Debugging the Rails, Bun, and Yarn Berry Collision"
-description: "How a collision between Rails 8's cssbundling-rails, Vite+'s Bun shim, and Yarn Berry PnP silently broke my dev server—and how I permanently solved it."
-pubDate: 2026-09-16
-updatedDate: 2026-09-17
+title: "The Ghost in the Toolchain: Debugging the Rails, Bun, and Yarn Berry Collision (Updated)"
+description: "How a collision between Rails 8's cssbundling-rails, Vite+'s Bun shim, and Yarn Berry PnP silently broke my dev server—and how I permanently solved it. Updated with revised analysis."
+pubDate: 2026-09-17
 heroImage: "/blog-placeholder-3.jpg"
 ---
 
-> **Note**: This post has been updated with a revised analysis. For the latest
-> version, see
-> [The Ghost in the Toolchain (Updated)](/blog/the-ghost-in-the-toolchain-rails-bun-yarn-updated/).
+This is an updated version of my original post about debugging a toolchain
+collision between Rails, Bun, and Yarn Berry. After further investigation, I
+discovered that the issue was simpler than initially thought.
+
+**This article replaces the previous analysis. For the original version, see
+[The Ghost in the Toolchain (Original)](/blog/the-ghost-in-the-toolchain-rails-bun-yarn/).**
+
+---
 
 You initialize a fresh Rails 8 application with modern tooling: Propshaft for
 asset management, esbuild for JavaScript, Tailwind CSS for styling, and

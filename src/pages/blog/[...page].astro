@@ -16,7 +16,7 @@ interface Props {
 }
 
 const { page } = Astro.props;
-const title = page.currentPage > 1 ? `Blog — Page ${page.currentPage}` : "Blog";
+const title = page.currentPage > 1 ? `All Posts — Page ${page.currentPage}` : "All Posts";
 const description = "Latest articles, tutorials, and insights.";
 const permalink = Astro.site ? `${Astro.site.href}blog` : "/blog";
 ---
@@ -29,7 +29,7 @@ const permalink = Astro.site ? `${Astro.site.href}blog` : "/blog";
 >
   <div class="container max-w-[42em] mx-auto">
     <div class="mb-10">
-      <h1 class="font-serif font-bold text-4xl sm:text-5xl mb-3">Blog</h1>
+      <h1 class="font-serif font-bold text-4xl sm:text-5xl mb-3">All Posts</h1>
       <p class="text-text-secondary text-lg">
         Notes, tutorials, and insights on software development and technology.
       </p>

@@ -8,7 +8,8 @@ export const GET: APIRoute = async () => {
   }
 
   const png = await renderOgImage({
-    title: SITE.tagline,
+    title: SITE.title,
+    description: SITE.description,
     stamp: SITE.url.replace(/^https?:\/\//, ""),
   });
 

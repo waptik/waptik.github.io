@@ -65,7 +65,7 @@ export const AUTHOR = {
 export const NAV: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
-  { label: "Blog", href: "/blog" },
+  { label: "Posts", href: "/blog" },
   { label: "About", href: "/about" },
   { label: "Uses", href: "/uses" },
   { label: "Tags", href: "/tags" },

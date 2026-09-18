@@ -4,7 +4,7 @@ description: "A log about my journey on setting up my very first vps in a long t
 pubDate: "Jul 27 2025"
 heroImage: "/blog-placeholder-3.jpg"
 tags: ["cloud", "oracle", "devops"]
-draft: false
+draft: true
 ---
 
 A Work In Progress article about my journey to setting up a cloud server

@@ -24,8 +24,9 @@ export function tagSlug(tag: string): string {
  * Drafts stay visible in dev mode and are excluded from production builds.
  */
 export async function getPublishedPosts(): Promise<Post[]> {
+  const isProd = import.meta.env.PROD || process.env.NODE_ENV === "production";
   const posts = await getCollection("blog", ({ data }) =>
-    import.meta.env.PROD ? !data.draft : true,
+    isProd ? data.draft === false : true,
   );
 
   return posts.sort(

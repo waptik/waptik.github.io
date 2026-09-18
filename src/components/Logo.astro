@@ -5,14 +5,14 @@ import { LogomarkIcon } from "./icons";
 
 <a
   href="/"
-  class="group flex items-center gap-2 font-sans font-bold text-lg text-text-main hover:text-primary transition-all duration-500 no-underline shrink-0 rounded-lg hover:scale-[101%] active:scale-[99%]"
+  class="group flex items-center gap-0.5 sm:gap-1 text-xl sm:text-2xl font-bold font-sans text-text-main hover:text-primary transition-all duration-500 no-underline shrink-0 rounded-lg hover:scale-[100.5%] active:scale-[99%] px-1.5 py-1 -ml-1.5 hover:ring-[.35rem] hover:ring-border/60 hover:bg-border/60"
   aria-label={`${SITE.title} Home`}
 >
   <LogomarkIcon
-    size={34}
-    class="-rotate-12 group-hover:-rotate-3 transition-transform duration-500 ease-out"
+    size={48}
+    class="w-10 h-10 sm:w-12 sm:h-12 rotate-0 group-hover:-rotate-6 transition-transform duration-500 ease-out shrink-0"
   />
-  <span class="inline-block text-base tracking-tight font-bold">
+  <span class="tracking-tight font-bold">
     {SITE.title}
   </span>
 </a>

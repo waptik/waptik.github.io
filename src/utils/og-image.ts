@@ -7,6 +7,7 @@ import satori from "satori";
 import { OG, SITE } from "../config";
 
 let fontPromise: Promise<Buffer> | undefined;
+let avatarPromise: Promise<string> | undefined;
 
 function loadFont(): Promise<Buffer> {
   fontPromise ??= readFile(
@@ -15,13 +16,21 @@ function loadFont(): Promise<Buffer> {
   return fontPromise;
 }
 
-const BG_COLOR = "#1a1a1c";
-const TEXT_MAIN = "#eeeef0";
-const TEXT_MUTED = "rgba(238, 238, 240, 0.55)";
-const ACCENT = "#9d9db5";
+function loadAvatar(): Promise<string> {
+  avatarPromise ??= readFile(join(process.cwd(), "public/icon-192.png")).then(
+    (buf) => `data:image/png;base64,${buf.toString("base64")}`,
+  );
+  return avatarPromise;
+}
 
-interface OgOptions {
+const BG_COLOR = "#0c0d11";
+const TEXT_MAIN = "#ededf0";
+const TEXT_MUTED = "#9d9db5";
+
+export interface OgOptions {
   title: string;
+  description?: string;
+  category?: string;
   stamp?: string;
   tags?: string[];
 }
@@ -30,16 +39,54 @@ const node = (
   type: string,
   style: Record<string, unknown>,
   children?: unknown,
-) => ({ type, props: { style, children } });
+  extraProps: Record<string, unknown> = {},
+) => ({
+  type,
+  props: { style, children, ...extraProps },
+});
 
 const text = (value: string, style: Record<string, unknown>) =>
   node("div", style, value);
 
 export async function renderOgImage(options: OgOptions): Promise<Buffer> {
-  const { title, stamp, tags = [] } = options;
-  const font = await loadFont();
+  const { title, description, category, stamp } = options;
+  const [font, avatar] = await Promise.all([loadFont(), loadAvatar()]);
 
-  const footer = [stamp, tags.join(" · ")].filter(Boolean).join("  —  ");
+  const domain = stamp || SITE.url.replace(/^https?:\/\//, "");
+
+  const topItems = [];
+
+  if (category) {
+    topItems.push(
+      text(category.toUpperCase(), {
+        fontSize: 24,
+        letterSpacing: "0.14em",
+        color: TEXT_MUTED,
+        marginBottom: 16,
+      }),
+    );
+  }
+
+  topItems.push(
+    text(title, {
+      fontSize: title.length > 50 ? 50 : 62,
+      lineHeight: 1.18,
+      color: TEXT_MAIN,
+      maxWidth: 980,
+      marginBottom: description ? 28 : 0,
+    }),
+  );
+
+  if (description) {
+    topItems.push(
+      text(description, {
+        fontSize: 22,
+        lineHeight: 1.55,
+        color: TEXT_MUTED,
+        maxWidth: 900,
+      }),
+    );
+  }
 
   const markup = node(
     "div",
@@ -49,40 +96,36 @@ export async function renderOgImage(options: OgOptions): Promise<Buffer> {
       justifyContent: "space-between",
       width: "100%",
       height: "100%",
-      padding: "72px 80px",
+      padding: "80px",
       backgroundColor: BG_COLOR,
       fontFamily: "JetBrains Mono",
-      color: TEXT_MAIN,
     },
     [
-      text(SITE.title.toUpperCase(), {
-        fontSize: 24,
-        letterSpacing: "0.3em",
-        color: ACCENT,
-        fontWeight: 600,
-      }),
-
-      node("div", { display: "flex", flexDirection: "column", gap: 32 }, [
-        text(title, {
-          fontSize: title.length > 45 ? 54 : 64,
-          lineHeight: 1.2,
-          letterSpacing: "-0.01em",
-          color: TEXT_MAIN,
-        }),
-        node("div", {
-          display: "flex",
-          width: 100,
-          height: 4,
-          backgroundColor: ACCENT,
-          borderRadius: 2,
-        }),
-      ]),
-
-      text(footer, {
-        fontSize: 22,
-        letterSpacing: "0.1em",
-        color: TEXT_MUTED,
-      }),
+      node("div", { display: "flex", flexDirection: "column" }, topItems),
+      node(
+        "div",
+        { display: "flex", flexDirection: "column", gap: 14 },
+        [
+          node(
+            "img",
+            {
+              width: 56,
+              height: 56,
+              transform: "rotate(-12deg)",
+            },
+            undefined,
+            {
+              src: avatar,
+              width: 56,
+              height: 56,
+            },
+          ),
+          text(domain, {
+            fontSize: 24,
+            color: TEXT_MUTED,
+          }),
+        ],
+      ),
     ],
   );
 

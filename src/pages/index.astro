@@ -59,7 +59,7 @@ const featuredProject = getFeaturedProject();
             href="/blog"
             class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border text-text-main hover:bg-border/60 transition-all no-underline"
           >
-            <span>Read Articles</span>
+            <span>Read Posts</span>
           </a>
           <a
             href="/about"
@@ -188,21 +188,13 @@ const featuredProject = getFeaturedProject();
 
       {/* Latest Posts Section */}
       <section>
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary m-0">
-              Writing
-            </h2>
-            <h3 class="font-sans font-bold text-2xl text-text-main m-0 mt-0.5">
-              Recent Posts
-            </h3>
-          </div>
-          <a
-            href="/blog"
-            class="text-xs font-sans font-semibold text-primary hover:underline no-underline"
-          >
-            View all {totalPosts} posts &rarr;
-          </a>
+        <div class="mb-6">
+          <h2 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary m-0">
+            Writing
+          </h2>
+          <h3 class="font-sans font-bold text-2xl text-text-main m-0 mt-0.5">
+            Recent Posts
+          </h3>
         </div>
 
         <div class="flex flex-col divide-y divide-border">
@@ -243,7 +235,7 @@ const featuredProject = getFeaturedProject();
 
         <div class="mt-8 pt-6 border-t border-border flex justify-between items-center">
           <span class="text-xs text-text-secondary font-sans">
-            Showing {recentPosts.length} of {totalPosts} articles
+            Showing {recentPosts.length} of {totalPosts} posts
           </span>
           <a
             href="/blog"

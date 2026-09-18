@@ -9,7 +9,15 @@ import icon from "astro-icon";
 // https://astro.build/config
 export default defineConfig({
   site: SITE.url,
-  integrations: [mdx(), sitemap(), icon()],
+  integrations: [
+    mdx(),
+    sitemap({
+      changefreq: "weekly",
+      priority: 0.7,
+      lastmod: new Date(),
+    }),
+    icon(),
+  ],
   markdown: {
     shikiConfig: {
       themes: {

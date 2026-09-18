@@ -1,6 +1,5 @@
 import type { APIRoute, GetStaticPaths } from "astro";
-import { OG } from "../../config";
-import { formatDateStamp } from "../../utils/date";
+import { OG, SITE } from "../../config";
 import { renderOgImage } from "../../utils/og-image";
 import { getPublishedPosts, type Post } from "../../utils/posts";
 
@@ -23,7 +22,9 @@ export const GET: APIRoute<Props> = async ({ props }) => {
 
   const png = await renderOgImage({
     title: post.data.title,
-    stamp: formatDateStamp(post.data.pubDate),
+    description: post.data.description,
+    category: post.data.tags?.[0],
+    stamp: SITE.url.replace(/^https?:\/\//, ""),
     tags: post.data.tags,
   });
 

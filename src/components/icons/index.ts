@@ -7,3 +7,4 @@ export { default as LinkedinIcon } from "./Linkedin.astro";
 export { default as EmailIcon } from "./Email.astro";
 export { default as RssIcon } from "./Rss.astro";
 export { default as LogomarkIcon } from "./Logomark.astro";
+export { default as LogomarkFullIcon } from "./LogomarkFull.astro";

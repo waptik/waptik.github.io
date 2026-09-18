@@ -27,7 +27,7 @@ export const SITE = {
   /** Used for og:locale. */
   locale: "en_US",
   /** Fallback OG image, relative to public/. Used for pages without one. */
-  defaultOgImage: "/avatar.jpg",
+  defaultOgImage: "/og-default.png",
 } as const;
 
 export const AUTHOR = {

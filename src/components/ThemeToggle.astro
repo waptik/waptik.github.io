@@ -1,0 +1,108 @@
+---
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  class="p-2 rounded-lg duration-300 transition-all hover:ring-[.2rem] hover:scale-[102%] active:scale-[98%] hover:ring-border hover:bg-border text-text-secondary hover:text-text-main flex items-center justify-center shrink-0 cursor-pointer"
+  aria-label="Toggle theme"
+  title="Toggle theme"
+>
+  <!-- Sun Icon (visible in Dark mode to switch to light) -->
+  <svg
+    class="theme-icon-sun w-5 h-5"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.14zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+      clip-rule="evenodd"></path>
+  </svg>
+  <!-- Moon Icon (visible in Light mode to switch to dark) -->
+  <svg
+    class="theme-icon-moon w-5 h-5"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path
+      d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+    ></path>
+  </svg>
+</button>
+
+<style>
+  /* Default (light mode): show moon icon */
+  .theme-icon-sun {
+    display: none;
+  }
+  .theme-icon-moon {
+    display: block;
+  }
+
+  /* Dark mode: show sun icon */
+  :global(.theme-dark) .theme-icon-sun {
+    display: block;
+  }
+  :global(.theme-dark) .theme-icon-moon {
+    display: none;
+  }
+</style>
+
+<script>
+  const setupThemeToggle = () => {
+    const button = document.getElementById("theme-toggle");
+    if (!button) return;
+
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const isCurrentDark = () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        return savedTheme === "dark";
+      }
+      return (
+        document.documentElement.classList.contains("theme-dark") ||
+        prefersDark.matches
+      );
+    };
+
+    const applyTheme = (dark: boolean) => {
+      if (dark) {
+        document.documentElement.classList.add("theme-dark");
+        document.documentElement.setAttribute("data-pf-theme", "dark");
+        button.setAttribute("aria-label", "Switch to light mode");
+      } else {
+        document.documentElement.classList.remove("theme-dark");
+        document.documentElement.removeAttribute("data-pf-theme");
+        button.setAttribute("aria-label", "Switch to dark mode");
+      }
+    };
+
+    applyTheme(isCurrentDark());
+
+    const newButton = button.cloneNode(true) as HTMLElement;
+    button.parentNode?.replaceChild(newButton, button);
+
+    newButton.addEventListener("click", () => {
+      const currentlyDark =
+        document.documentElement.classList.contains("theme-dark");
+      const nextDark = !currentlyDark;
+      localStorage.setItem("theme", nextDark ? "dark" : "light");
+      applyTheme(nextDark);
+    });
+
+    prefersDark.addEventListener("change", (e) => {
+      if (!localStorage.getItem("theme")) {
+        applyTheme(e.matches);
+      }
+    });
+  };
+
+  setupThemeToggle();
+  document.addEventListener("astro:page-load", setupThemeToggle);
+</script>

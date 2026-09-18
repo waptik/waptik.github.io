@@ -1,222 +1,51 @@
 ---
 import { NAV } from "../config";
 
+export interface Props {
+  current?: string;
+}
+
 const { current = "" } = Astro.props;
 ---
 
-<nav class="flex flex-1 items-center justify-end font-sans font-bold uppercase text-xs tracking-wider flex-wrap gap-1 sm:gap-1.5" aria-label="Main Navigation">
-  {NAV.map((item) => {
-    const isSelected =
-      (item.href === "/" && (current === "" || current === "home")) ||
-      (item.href !== "/" && (current === item.href.replace(/^\//, "") || current.startsWith(item.href.replace(/^\//, "") + "/")));
-    return (
-      <a
-        href={item.href}
-        class:list={[
-          "nav-link px-2.5 py-1.5 rounded-lg transition-all",
-          isSelected ? "selected text-primary" : "text-text-secondary hover:text-text-main",
-        ]}
-        aria-current={isSelected ? "page" : undefined}
-      >
-        {item.label}
-      </a>
-    );
-  })}
-  <div class="theme-toggle-container">
-    <button
-      type="button"
-      id="theme-toggle"
-      class="theme-toggle"
-      aria-label="Toggle theme"
-      title="Toggle theme"
-    >
-      <svg
-        class="theme-icon-sun"
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.14zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-          clip-rule="evenodd"></path>
-      </svg>
-      <svg
-        class="theme-icon-moon"
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path
-          d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-        ></path>
-      </svg>
-    </button>
-  </div>
+<nav
+  class="flex items-center gap-1 sm:gap-3 mt-3 sm:mt-4 overflow-x-auto no-scrollbar py-1 w-full"
+  aria-label="Main Navigation"
+>
+  {
+    NAV.map((item) => {
+      const isSelected =
+        (item.href === "/" && (current === "" || current === "home")) ||
+        (item.href !== "/" &&
+          (current === item.href.replace(/^\//, "") ||
+            current.startsWith(item.href.replace(/^\//, "") + "/")));
+      return (
+        <a
+          href={item.href}
+          class:list={[
+            "text-xs uppercase tracking-wide transition-all relative px-2.5 py-1 rounded-full font-sans font-semibold shrink-0 no-underline",
+            isSelected
+              ? "text-text-main bg-border/60 font-bold"
+              : "text-text-secondary hover:text-text-main hover:bg-border/30",
+          ]}
+          aria-current={isSelected ? "page" : undefined}
+        >
+          <span class="relative">{item.label}</span>
+        </a>
+      );
+    })
+  }
 </nav>
 
-<script>
-  const setupThemeToggle = () => {
-    const button = document.getElementById("theme-toggle");
-    if (!button) return;
-
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-
-    const isCurrentDark = () => {
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme) {
-        return savedTheme === "dark";
-      }
-      return (
-        document.documentElement.classList.contains("theme-dark") ||
-        prefersDark.matches
-      );
-    };
-
-    const applyTheme = (dark: boolean) => {
-      if (dark) {
-        document.documentElement.classList.add("theme-dark");
-        document.documentElement.setAttribute("data-pf-theme", "dark");
-        button.setAttribute("aria-label", "Switch to light mode");
-      } else {
-        document.documentElement.classList.remove("theme-dark");
-        document.documentElement.removeAttribute("data-pf-theme");
-        button.setAttribute("aria-label", "Switch to dark mode");
-      }
-    };
-
-    applyTheme(isCurrentDark());
-
-    button.addEventListener("click", () => {
-      const currentlyDark =
-        document.documentElement.classList.contains("theme-dark");
-      const nextDark = !currentlyDark;
-      localStorage.setItem("theme", nextDark ? "dark" : "light");
-      applyTheme(nextDark);
-    });
-
-    prefersDark.addEventListener("change", (e) => {
-      if (!localStorage.getItem("theme")) {
-        applyTheme(e.matches);
-      }
-    });
-  };
-
-  setupThemeToggle();
-  document.addEventListener("astro:after-swap", setupThemeToggle);
-</script>
-
 <style>
-  .nav-link {
-    color: inherit;
-    text-decoration: none;
-    display: inline-block;
-    position: relative;
-    text-align: center;
-    min-height: 36px;
-    line-height: 24px;
-  }
-
-  .nav-link:not(.selected) {
-    opacity: 0.75;
-  }
-
-  .nav-link:hover {
-    opacity: 1;
-  }
-
-  .nav-link::before {
-    content: "";
-    position: absolute;
-    transition: transform 0.25s ease;
-    left: 8px;
-    right: 8px;
-    bottom: 2px;
-    height: 2px;
-    background: var(--text-secondary);
-    transform: scaleX(0);
-    border-radius: 9999px;
-  }
-
-  .nav-link:hover::before,
-  .nav-link.selected::before {
-    transform: scaleX(1);
-  }
-
-  .nav-link.selected::before {
-    background: var(--primary-color);
-  }
-
-  .theme-toggle-container {
-    display: flex;
-    align-items: center;
-    margin-left: 14px;
-  }
-
-  @media screen and (max-width: 520px) {
-    .theme-toggle-container {
-      margin-right: 0.5em;
-    }
-  }
-
-  .theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 9999px;
-    border: none;
-    background-color: #f0f0f0;
-    color: #555;
-    cursor: pointer;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      transform 0.15s ease;
-    padding: 0;
-  }
-
-  .theme-toggle:hover {
-    background-color: #e4e4e4;
-    color: var(--primary-color);
-  }
-
-  .theme-toggle:active {
-    transform: scale(0.95);
-  }
-
-  /* Default (light mode): show moon icon to allow switching to dark */
-  .theme-icon-sun {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
-
-  .theme-icon-moon {
-    display: block;
-  }
-
-  /* Dark mode: show sun icon to allow switching to light */
-  :global(.theme-dark) .theme-toggle {
-    background-color: #333;
-    color: #ccc;
-  }
-
-  :global(.theme-dark) .theme-toggle:hover {
-    background-color: #444;
-    color: #fff;
-  }
-
-  :global(.theme-dark) .theme-icon-sun {
-    display: block;
-  }
-
-  :global(.theme-dark) .theme-icon-moon {
-    display: none;
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 </style>
+

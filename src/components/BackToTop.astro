@@ -1,0 +1,63 @@
+---
+---
+
+<button
+  id="back-to-top"
+  type="button"
+  aria-label="Back to top"
+  class="fixed z-50 w-11 h-11 rounded-full bg-primary text-white dark:bg-text-main dark:text-background-body hover:bg-primary/90 dark:hover:bg-text-main/90 shadow-2xl ring-1 ring-border/50 flex items-center justify-center cursor-pointer transition-all duration-300 active:scale-90"
+  style="bottom: max(1.5rem, calc(1rem + env(safe-area-inset-bottom, 0px))); right: max(1.5rem, calc(1rem + env(safe-area-inset-right, 0px))); opacity: 0; pointer-events: none; transform: translateY(12px);"
+>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m18 15-6-6-6 6"></path>
+  </svg>
+</button>
+
+<script>
+  const initBackToTop = () => {
+    const btn = document.getElementById("back-to-top");
+    if (!btn) return;
+
+    const onScroll = () => {
+      const scrollY =
+        window.scrollY ||
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop ||
+        0;
+
+      if (scrollY > 120) {
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        btn.style.transform = "translateY(0)";
+      } else {
+        btn.style.opacity = "0";
+        btn.style.pointerEvents = "none";
+        btn.style.transform = "translateY(12px)";
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+      document.body.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  };
+
+  initBackToTop();
+  document.addEventListener("astro:page-load", initBackToTop);
+</script>

@@ -1,0 +1,48 @@
+---
+import type { Post } from "../utils/posts";
+
+interface Props {
+  previous?: Post;
+  next?: Post;
+}
+
+const { previous, next } = Astro.props;
+---
+
+{
+  (previous || next) && (
+    <nav class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-12 pt-8 border-t border-text-secondary/30" aria-label="More posts">
+      {previous ? (
+        <a
+          class="group flex flex-col p-4 rounded-lg border border-text-secondary/20 hover:border-primary transition-all no-underline shadow-none"
+          href={`/blog/${previous.id}/`}
+          rel="prev"
+        >
+          <span class="font-sans text-xs uppercase tracking-wider text-text-secondary mb-1">
+            ← Previous
+          </span>
+          <span class="font-sans font-bold text-text-main group-hover:text-primary transition-colors line-clamp-2">
+            {previous.data.title}
+          </span>
+        </a>
+      ) : (
+        <span class="hidden sm:block" />
+      )}
+
+      {next && (
+        <a
+          class="group flex flex-col sm:text-right p-4 rounded-lg border border-text-secondary/20 hover:border-primary transition-all no-underline shadow-none"
+          href={`/blog/${next.id}/`}
+          rel="next"
+        >
+          <span class="font-sans text-xs uppercase tracking-wider text-text-secondary mb-1">
+            Next →
+          </span>
+          <span class="font-sans font-bold text-text-main group-hover:text-primary transition-colors line-clamp-2">
+            {next.data.title}
+          </span>
+        </a>
+      )}
+    </nav>
+  )
+}

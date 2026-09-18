@@ -1,26 +1,41 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
-import BlogPost from "../../layouts/BlogPost.astro";
+import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
-import readingTime from "reading-time";
+import BlogPost from "../../layouts/BlogPost.astro";
+import { OG } from "../../config";
+import {
+  getPublishedPosts,
+  getAdjacentPosts,
+  type Post,
+} from "../../utils/posts";
+import { readingTime } from "../../utils/reading-time";
 
-export async function getStaticPaths() {
-  const posts = (await getCollection("blog")).filter(
-    (post) => !post.data.draft,
-  );
+export const getStaticPaths = (async () => {
+  const posts = await getPublishedPosts();
+
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: post,
+    props: {
+      post,
+      ...getAdjacentPosts(posts, post.id),
+    },
   }));
-}
-type Props = CollectionEntry<"blog">;
+}) satisfies GetStaticPaths;
 
-const post = Astro.props;
-const { Content } = await render(post);
+interface Props {
+  post: Post;
+  previous?: Post;
+  next?: Post;
+}
+
+const { post, previous, next } = Astro.props;
+const { Content, headings } = await render(post);
 const permalink = Astro.site
   ? `${Astro.site.href}blog/${post.id}/`
   : `/blog/${post.id}/`;
-const readingTimeEstimate = readingTime(post.body || "").text;
+const minutes = readingTime(post.body);
+const readingTimeEstimate = `${minutes} min read`;
+const ogImage = OG.enabled ? `/og/${post.id}.png` : undefined;
 ---
 
 <BlogPost
@@ -31,6 +46,10 @@ const readingTimeEstimate = readingTime(post.body || "").text;
   updatedDate={post.data.updatedDate}
   tags={post.data.tags}
   readingTime={readingTimeEstimate}
+  headings={headings}
+  previous={previous}
+  next={next}
+  ogImage={ogImage}
 >
   <Content />
 </BlogPost>

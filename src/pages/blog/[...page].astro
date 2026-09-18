@@ -1,0 +1,83 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Pagination from "../../components/Pagination.astro";
+import { BLOG } from "../../config";
+import { getPublishedPosts, tagSlug, type Post } from "../../utils/posts";
+import { formatDate } from "../../utils/date";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+  return paginate(posts, { pageSize: BLOG.postsPerPage });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+}
+
+const { page } = Astro.props;
+const title = page.currentPage > 1 ? `Blog — Page ${page.currentPage}` : "Blog";
+const description = "Latest articles, tutorials, and insights.";
+const permalink = Astro.site ? `${Astro.site.href}blog` : "/blog";
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  permalink={permalink}
+  current="blog"
+>
+  <div class="container max-w-[42em] mx-auto">
+    <div class="mb-10">
+      <h1 class="font-serif font-bold text-4xl sm:text-5xl mb-3">Blog</h1>
+      <p class="text-text-secondary text-lg">
+        Notes, tutorials, and insights on software development and technology.
+      </p>
+    </div>
+
+    <div class="space-y-12">
+      {
+        page.data.map((post) => {
+          const href = `/blog/${post.id}/`;
+          return (
+            <article class="post-item pb-8 border-b border-text-secondary/20 last:border-b-0">
+              <h2 class="font-sans font-bold text-2xl mb-2">
+                <a
+                  href={href}
+                  class="no-underline text-text-main hover:text-primary transition-colors"
+                >
+                  {post.data.title}
+                </a>
+              </h2>
+              <p class="text-text-secondary mb-4 leading-relaxed">
+                {post.data.description}
+              </p>
+              <div class="flex flex-wrap items-center justify-between gap-3 text-sm font-sans">
+                <time
+                  datetime={post.data.pubDate.toISOString()}
+                  class="uppercase font-semibold text-text-secondary text-xs"
+                >
+                  — {formatDate(post.data.pubDate)}
+                </time>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2">
+                    {post.data.tags.map((tag) => (
+                      <a
+                        href={`/tags/${tagSlug(tag)}/`}
+                        class="text-xs uppercase px-2 py-0.5 rounded bg-text-secondary/10 text-text-secondary hover:text-primary hover:bg-primary/10 transition-colors no-underline shadow-none"
+                      >
+                        #{tag}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <Pagination page={page} label="Blog posts" />
+  </div>
+</BaseLayout>

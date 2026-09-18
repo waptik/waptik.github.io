@@ -1,0 +1,112 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Pagination from "../../../components/Pagination.astro";
+import { BLOG } from "../../../config";
+import {
+  collectTags,
+  getPublishedPosts,
+  postsByTag,
+  tagSlug,
+  type Post,
+} from "../../../utils/posts";
+import { formatDate } from "../../../utils/date";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+
+  return collectTags(posts).flatMap((tag) =>
+    paginate(postsByTag(posts, tag.slug), {
+      params: { tag: tag.slug },
+      pageSize: BLOG.postsPerPage,
+      props: { tagName: tag.name },
+    }),
+  );
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+  tagName: string;
+}
+
+const { page, tagName } = Astro.props;
+const suffix = page.currentPage > 1 ? ` — Page ${page.currentPage}` : "";
+const title = `#${tagName}${suffix}`;
+const description = `Articles tagged with #${tagName}.`;
+const permalink = Astro.site
+  ? `${Astro.site.href}tags/${tagSlug(tagName)}/`
+  : `/tags/${tagSlug(tagName)}/`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  permalink={permalink}
+  current="tags"
+>
+  <div class="container max-w-[42em] mx-auto">
+    <div class="mb-10">
+      <p class="mb-2">
+        <a
+          href="/tags/"
+          class="text-xs uppercase font-sans font-semibold text-text-secondary hover:text-primary transition-colors no-underline shadow-none"
+        >
+          ← All tags
+        </a>
+      </p>
+      <h1 class="font-serif font-bold text-4xl sm:text-5xl mb-3">#{tagName}</h1>
+      <p class="text-text-secondary text-lg">
+        {page.total} {page.total === 1 ? "post" : "posts"} under this tag.
+      </p>
+    </div>
+
+    <div class="space-y-12">
+      {
+        page.data.map((post) => {
+          const href = `/blog/${post.id}/`;
+          return (
+            <article class="post-item pb-8 border-b border-text-secondary/20 last:border-b-0">
+              <h2 class="font-sans font-bold text-2xl mb-2">
+                <a
+                  href={href}
+                  class="no-underline text-text-main hover:text-primary transition-colors"
+                >
+                  {post.data.title}
+                </a>
+              </h2>
+              <p class="text-text-secondary mb-4 leading-relaxed">
+                {post.data.description}
+              </p>
+              <div class="flex flex-wrap items-center justify-between gap-3 text-sm font-sans">
+                <time
+                  datetime={post.data.pubDate.toISOString()}
+                  class="uppercase font-semibold text-text-secondary text-xs"
+                >
+                  — {formatDate(post.data.pubDate)}
+                </time>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2">
+                    {post.data.tags.map((tag) => (
+                      <a
+                        href={`/tags/${tagSlug(tag)}/`}
+                        class={`text-xs uppercase px-2 py-0.5 rounded transition-colors no-underline shadow-none ${
+                          tagSlug(tag) === tagSlug(tagName)
+                            ? "bg-primary text-white"
+                            : "bg-text-secondary/10 text-text-secondary hover:text-primary hover:bg-primary/10"
+                        }`}
+                      >
+                        #{tag}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <Pagination page={page} label={`Posts tagged ${tagName}`} />
+  </div>
+</BaseLayout>

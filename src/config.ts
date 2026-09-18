@@ -45,6 +45,7 @@ export const NAV: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
+  { label: "Tags", href: "/tags" },
 ];
 
 export const SOCIAL: SocialLink[] = [
@@ -56,11 +57,23 @@ export const SOCIAL: SocialLink[] = [
 ];
 
 export const BLOG = {
-  /** Posts per page on /blog. */
-  postsPerPage: 10,
+  /** Posts per page on /blog and the tag archives. */
+  postsPerPage: 6,
   /** Latest posts shown on the home page. */
-  postsOnHome: 5,
+  postsOnHome: 4,
   /** Estimated reading speed used for the "N min read" label. */
   wordsPerMinute: 200,
-  showReadingTime: false,
+  showReadingTime: true,
+  /** Render the table of contents on article pages. */
+  showTableOfContents: true,
+  /** Minimum number of headings before the table of contents appears. */
+  tocMinHeadings: 3,
 } as const;
+
+/** Generate a per-article OG image at build time with satori. */
+export const OG = {
+  enabled: true,
+  width: 1200,
+  height: 630,
+} as const;
+

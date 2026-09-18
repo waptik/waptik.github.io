@@ -6,6 +6,7 @@ const { current = "" } = Astro.props;
   <a class={current === "" ? "selected" : ""} href="/">home</a>
   <a class={current === "about" ? "selected" : ""} href="/about">about</a>
   <a class={current === "blog" ? "selected" : ""} href="/blog">blog</a>
+  <a class={current === "tags" ? "selected" : ""} href="/tags">tags</a>
   <div class="theme-toggle-container">
     <button
       type="button"

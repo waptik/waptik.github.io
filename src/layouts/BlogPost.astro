@@ -1,7 +1,11 @@
 ---
+import type { MarkdownHeading } from "astro";
 import BaseLayout from "./BaseLayout.astro";
 import Bio from "../components/Bio.astro";
-import { AUTHOR, SOCIAL, SITE } from "../config";
+import TableOfContents from "../components/TableOfContents.astro";
+import PostNav from "../components/PostNav.astro";
+import { AUTHOR, SOCIAL, SITE, BLOG } from "../config";
+import { tagSlug, type Post } from "../utils/posts";
 
 const today = new Date();
 
@@ -13,10 +17,30 @@ export interface Props {
   updatedDate?: Date;
   tags?: string[];
   readingTime?: string;
+  headings?: MarkdownHeading[];
+  previous?: Post;
+  next?: Post;
+  ogImage?: string;
 }
 
-const { title, description, permalink, pubDate, updatedDate, tags, readingTime } =
-  Astro.props;
+const {
+  title,
+  description,
+  permalink,
+  pubDate,
+  updatedDate,
+  tags = [],
+  readingTime,
+  headings = [],
+  previous,
+  next,
+  ogImage,
+} = Astro.props;
+
+const hasToc =
+  BLOG.showTableOfContents &&
+  headings.filter((h) => h.depth >= 2 && h.depth <= 3).length >=
+    BLOG.tocMinHeadings;
 ---
 
 <BaseLayout
@@ -25,89 +49,157 @@ const { title, description, permalink, pubDate, updatedDate, tags, readingTime }
   permalink={permalink}
   current="blog"
   hideFooter={true}
+  ogImage={ogImage}
   article={{
     publishedTime: pubDate.toISOString(),
     modifiedTime: updatedDate?.toISOString(),
     tags: tags ?? [],
   }}
 >
-  <header class="text-center">
-    <p class="uppercase font-sans font-semibold text-text-secondary">
-      {pubDate.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
+  <header class="text-center max-w-3xl mx-auto mb-8">
+    <p class="uppercase font-sans font-semibold text-text-secondary text-sm">
+      {
+        pubDate.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      }
       {readingTime && ` ~ ${readingTime}`}
-      {updatedDate && ` (Updated ${updatedDate.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })})`}
+      {
+        updatedDate &&
+          ` (Updated ${updatedDate.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })})`
+      }
     </p>
     <h1 class="mb-4">{title}</h1>
-    <hr class="min-w-[100px] w-[30%] mx-auto" />
+
+    {
+      tags && tags.length > 0 && (
+        <div class="flex flex-wrap justify-center gap-2 mt-4">
+          {tags.map((tag) => (
+            <a
+              href={`/tags/${tagSlug(tag)}/`}
+              class="text-xs font-sans font-semibold uppercase px-2.5 py-1 rounded bg-text-secondary/10 text-text-secondary hover:text-primary hover:bg-primary/10 transition-colors no-underline shadow-none"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )
+    }
+
+    <hr class="min-w-[100px] w-[30%] mx-auto mt-6" />
   </header>
-  <div class="container">
-    <article class="content">
-      <slot />
-    </article>
-    <hr />
-    <Bio />
-    <footer class="blog-post-footer mt-12 pt-8 border-t border-text-secondary">
-      <div class="footer-content grid grid-cols-3 gap-8 mb-8 max-md:grid-cols-1 max-md:gap-6">
-        <div class="footer-section">
-          <h3 class="text-base mb-4 text-text-main">
-            Let's Connect
-          </h3>
-          <div class="footer-links flex flex-col gap-2">
-            {
-              SOCIAL.map((social) => (
+
+  <div class="w-full max-w-[1100px] mx-auto px-4">
+    <div
+      class={
+        hasToc
+          ? "grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-10 items-start justify-center"
+          : "max-w-[42em] mx-auto"
+      }
+    >
+      <div class="min-w-0 max-w-[42em] mx-auto lg:mx-0 w-full">
+        {
+          hasToc && (
+            <div class="block lg:hidden mb-8 p-4 rounded-lg bg-text-secondary/5 border border-text-secondary/20">
+              <TableOfContents headings={headings} />
+            </div>
+          )
+        }
+
+        <article class="content">
+          <slot />
+        </article>
+
+        <PostNav previous={previous} next={next} />
+
+        <hr />
+        <Bio />
+
+        <footer class="blog-post-footer mt-12 pt-8 border-t border-text-secondary">
+          <div
+            class="footer-content grid grid-cols-3 gap-8 mb-8 max-md:grid-cols-1 max-md:gap-6"
+          >
+            <div class="footer-section">
+              <h3 class="text-base mb-4 text-text-main">Let's Connect</h3>
+              <div class="footer-links flex flex-col gap-2">
+                {
+                  SOCIAL.map((social) => (
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={social.label}
+                      class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
+                    >
+                      {social.label}
+                    </a>
+                  ))
+                }
+              </div>
+            </div>
+
+            <div class="footer-section">
+              <h3 class="text-base mb-4 text-text-main">Site Links</h3>
+              <div class="footer-links flex flex-col gap-2">
                 <a
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
+                  href="/tags"
                   class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
+                  >Tags</a
                 >
-                  {social.label}
-                </a>
-              ))
-            }
-          </div>
-        </div>
+                <a
+                  href="/rss.xml"
+                  class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
+                  >RSS Feed</a
+                >
+                <a
+                  href="/sitemap-index.xml"
+                  class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
+                  >Sitemap</a
+                >
+              </div>
+            </div>
 
-        <div class="footer-section">
-          <h3 class="text-base mb-4 text-text-main">
-            Site Links
-          </h3>
-          <div class="footer-links flex flex-col gap-2">
-            <a
-              href="/rss.xml"
-              class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
-            >RSS Feed</a>
-            <a
-              href="/sitemap.xml"
-              class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
-            >Sitemap</a>
+            <div class="footer-section">
+              <h3 class="text-base mb-4 text-text-main">About</h3>
+              <p class="text-sm leading-relaxed text-text-secondary">
+                {AUTHOR.bio}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div class="footer-section">
-          <h3 class="text-base mb-4 text-text-main">
-            About
-          </h3>
-          <p class="text-sm leading-relaxed text-text-secondary">
-            {AUTHOR.bio}
-          </p>
-        </div>
+          <div
+            class="footer-bottom flex justify-between items-center pt-8 border-t border-text-secondary max-md:flex-col max-md:gap-4 max-md:text-center"
+          >
+            <p class="m-0 text-sm text-text-secondary">
+              &copy; {today.getFullYear()}
+              {SITE.title}. All rights reserved. Powered by <a
+                href="https://astro.build"
+                target="_blank"
+                rel="noopener"
+                class="underline shadow-none hover:text-primary">Astro</a
+              >.
+            </p>
+            <button
+              id="back-to-top"
+              aria-label="Back to top"
+              class="text-white border-none w-10 h-10 rounded-full cursor-pointer text-xl transition-colors duration-200 bg-primary hover:bg-text-main"
+            >
+              ↑
+            </button>
+          </div>
+        </footer>
       </div>
 
-      <div class="footer-bottom flex justify-between items-center pt-8 border-t border-text-secondary max-md:flex-col max-md:gap-4 max-md:text-center">
-        <p class="m-0 text-sm text-text-secondary">
-          &copy; {today.getFullYear()} {SITE.title}. All rights reserved. Powered by <a href="https://astro.build" target="_blank" rel="noopener" class="underline shadow-none hover:text-primary">Astro</a>.
-        </p>
-        <button
-          id="back-to-top"
-          aria-label="Back to top"
-          class="text-white border-none w-10 h-10 rounded-full cursor-pointer text-xl transition-colors duration-200 bg-primary hover:bg-text-main"
-        >
-          ↑
-        </button>
-      </div>
-    </footer>
+      {
+        hasToc && (
+          <aside class="hidden lg:block sticky top-8">
+            <TableOfContents headings={headings} />
+          </aside>
+        )
+      }
+    </div>
   </div>
 </BaseLayout>
 
@@ -117,18 +209,3 @@ const { title, description, permalink, pubDate, updatedDate, tags, readingTime }
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 </script>
-
-<style>
-  @media (max-width: 768px) {
-    .footer-content {
-      grid-template-columns: 1fr;
-      gap: 1.5em;
-    }
-
-    .footer-bottom {
-      flex-direction: column;
-      gap: 1em;
-      text-align: center;
-    }
-  }
-</style>

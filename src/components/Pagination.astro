@@ -1,0 +1,56 @@
+---
+import type { Page } from "astro";
+
+interface Props {
+  page: Page<unknown>;
+  label?: string;
+}
+
+const { page, label = "Posts" } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+{
+  page.lastPage > 1 && (
+    <nav
+      class="flex items-center justify-between gap-4 mt-12 pt-8 border-t border-text-secondary/30 font-sans text-sm font-semibold uppercase tracking-wider"
+      aria-label={`${label} pagination`}
+    >
+      {page.url.prev ? (
+        <a
+          href={page.url.prev}
+          rel="prev"
+          class="px-4 py-2 border border-text-secondary/30 rounded-md text-text-main hover:text-primary hover:border-primary transition-colors no-underline shadow-none"
+        >
+          ← Newer
+        </a>
+      ) : (
+        <span class="px-4 py-2 text-text-secondary/40 border border-transparent select-none">
+          ← Newer
+        </span>
+      )}
+
+      <p class="m-0 text-text-secondary font-mono text-xs tracking-normal">
+        <span class="sr-only">Page </span>
+        {pad(page.currentPage)}
+        <span aria-hidden="true" class="mx-1">/</span>
+        <span class="sr-only">of </span>
+        {pad(page.lastPage)}
+      </p>
+
+      {page.url.next ? (
+        <a
+          href={page.url.next}
+          rel="next"
+          class="px-4 py-2 border border-text-secondary/30 rounded-md text-text-main hover:text-primary hover:border-primary transition-colors no-underline shadow-none"
+        >
+          Older →
+        </a>
+      ) : (
+        <span class="px-4 py-2 text-text-secondary/40 border border-transparent select-none">
+          Older →
+        </span>
+      )}
+    </nav>
+  )
+}

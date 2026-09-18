@@ -1,0 +1,39 @@
+---
+import type { MarkdownHeading } from "astro";
+import { BLOG } from "../config";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const items = Astro.props.headings.filter(
+  (heading) => heading.depth >= 2 && heading.depth <= 3,
+);
+
+const show = BLOG.showTableOfContents && items.length >= BLOG.tocMinHeadings;
+---
+
+{
+  show && (
+    <nav class="toc sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto" aria-labelledby="toc-heading">
+      <h2
+        class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary pb-2 border-b border-text-secondary/30 m-0"
+        id="toc-heading"
+      >
+        Table of Contents
+      </h2>
+      <ol class="mt-3 space-y-2 p-0 list-none text-sm font-sans leading-snug">
+        {items.map((heading) => (
+          <li class={heading.depth === 3 ? "pl-3 m-0" : "m-0"}>
+            <a
+              href={`#${heading.slug}`}
+              class="no-underline text-text-secondary hover:text-primary transition-colors block py-0.5 shadow-none"
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

@@ -4,6 +4,7 @@ description: "How a collision between Rails 8's cssbundling-rails, Vite+'s Bun s
 pubDate: 2026-09-16
 updatedDate: 2026-09-17
 heroImage: "/blog-placeholder-3.jpg"
+tags: ["rails", "bun", "yarn", "debugging"]
 ---
 
 > **Note**: This post has been updated with a revised analysis. For the latest

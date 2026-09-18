@@ -3,6 +3,7 @@ title: "The Ghost in the Toolchain: Debugging the Rails, Bun, and Yarn Berry Col
 description: "How a collision between Rails 8's cssbundling-rails, Vite+'s Bun shim, and Yarn Berry PnP silently broke my dev server—and how I permanently solved it. Updated with revised analysis."
 pubDate: 2026-09-17
 heroImage: "/blog-placeholder-3.jpg"
+tags: ["rails", "bun", "yarn", "debugging"]
 ---
 
 This is an updated version of my original post about debugging a toolchain

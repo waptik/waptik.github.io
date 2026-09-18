@@ -3,14 +3,69 @@ import { SITE } from "../config";
 ---
 
 <footer
-  class="text-sm my-4 mx-auto max-w-[1400px] py-4 px-8 text-center w-full text-text-secondary"
+  class="border-t border-border mt-16 pt-8 pb-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-secondary w-full"
 >
-  <span>
-    &copy; {new Date().getFullYear()} {SITE.title}. Powered by <a
+  <div class="flex items-center gap-1.5 flex-wrap justify-center sm:justify-start">
+    <span>&copy; {new Date().getFullYear()} {SITE.title}.</span>
+    <span>Built with</span>
+    <a
       href="https://astro.build"
       target="_blank"
-      rel="noopener"
-      class="underline hover:text-primary">Astro</a
-    >.
-  </span>
+      rel="noopener noreferrer"
+      class="hover:text-primary transition-colors underline underline-offset-2"
+    >
+      Astro
+    </a>
+    <span>&</span>
+    <a
+      href="https://tailwindcss.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hover:text-primary transition-colors underline underline-offset-2"
+    >
+      Tailwind CSS
+    </a>
+  </div>
+
+  <div class="flex items-center gap-4 flex-wrap justify-center">
+    <a
+      href="/rss.xml"
+      class="hover:text-text-main transition-colors flex items-center gap-1"
+      aria-label="Blog RSS Feed"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M4 11a9 9 0 0 1 9 9"></path>
+        <path d="M4 4a16 16 0 0 1 16 16"></path>
+        <circle cx="5" cy="19" r="1"></circle>
+      </svg>
+      <span>RSS Feed</span>
+    </a>
+    <span class="text-border" aria-hidden="true">•</span>
+    <a
+      href="/sitemap-index.xml"
+      class="hover:text-text-main transition-colors"
+      aria-label="Sitemap"
+    >
+      Sitemap
+    </a>
+    <span class="text-border" aria-hidden="true">•</span>
+    <a
+      href="/llms.txt"
+      class="hover:text-text-main transition-colors"
+      aria-label="llms.txt specification"
+    >
+      llms.txt
+    </a>
+  </div>
 </footer>

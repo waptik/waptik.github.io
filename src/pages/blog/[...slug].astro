@@ -6,6 +6,7 @@ import { OG } from "../../config";
 import {
   getPublishedPosts,
   getAdjacentPosts,
+  getRelatedPosts,
   type Post,
 } from "../../utils/posts";
 import { readingTime } from "../../utils/reading-time";
@@ -36,6 +37,7 @@ const permalink = Astro.site
 const minutes = readingTime(post.body);
 const readingTimeEstimate = `${minutes} min read`;
 const ogImage = OG.enabled ? `/og/${post.id}.png` : undefined;
+const relatedPosts = await getRelatedPosts(post, 3);
 ---
 
 <BlogPost
@@ -50,6 +52,7 @@ const ogImage = OG.enabled ? `/og/${post.id}.png` : undefined;
   previous={previous}
   next={next}
   ogImage={ogImage}
+  relatedPosts={relatedPosts}
 >
   <Content />
 </BlogPost>

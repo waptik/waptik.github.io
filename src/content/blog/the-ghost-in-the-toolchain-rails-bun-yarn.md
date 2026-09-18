@@ -5,6 +5,7 @@ pubDate: 2026-09-16
 updatedDate: 2026-09-17
 heroImage: "/blog-placeholder-3.jpg"
 tags: ["rails", "bun", "yarn", "debugging"]
+draft: false
 ---
 
 > **Note**: This post has been updated with a revised analysis. For the latest

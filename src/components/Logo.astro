@@ -1,9 +1,20 @@
-<a href="/">
+---
+import { SITE } from "../config";
+---
+
+<a
+  href="/"
+  class="flex items-center gap-2.5 font-sans font-bold text-lg text-text-main hover:text-primary transition-colors no-underline group shrink-0"
+  aria-label={`${SITE.title} Home`}
+>
   <img
-    alt="Blog Logo"
+    alt={`${SITE.title} Logo`}
     src="/assets/logo.webp"
-    width="75"
-    height="50"
-    class="block w-[75px] max-sm:hidden"
+    width="48"
+    height="32"
+    class="block h-7 w-auto transition-transform duration-300 group-hover:scale-105"
   />
+  <span class="hidden min-[480px]:inline-block text-base tracking-tight font-bold">
+    {SITE.title}
+  </span>
 </a>

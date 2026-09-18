@@ -1,0 +1,53 @@
+---
+import { getRecentPosts, type Post } from "../utils/posts";
+import FormattedDate from "./FormattedDate.astro";
+
+export interface Props {
+  posts?: Post[];
+  limit?: number;
+  currentPostSlug?: string;
+  title?: string;
+  class?: string;
+}
+
+const {
+  posts: propPosts,
+  limit = 4,
+  currentPostSlug,
+  title = "Recent Posts",
+  class: className = "",
+} = Astro.props;
+
+const posts =
+  propPosts ??
+  (await getRecentPosts({ limit, excludeId: currentPostSlug }));
+---
+
+{
+  posts.length > 0 && (
+    <div class={className}>
+      <div class="mb-3">
+        <h2 class="text-xs font-sans font-bold uppercase tracking-wider text-text-secondary m-0">
+          {title}
+        </h2>
+      </div>
+      <ul class="flex flex-col gap-3 p-0 m-0 list-none">
+        {posts.map((post) => (
+          <li class="m-0 p-0">
+            <a
+              href={`/blog/${post.id}/`}
+              class="block group no-underline text-text-main"
+            >
+              <span class="text-xs font-medium group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                {post.data.title}
+              </span>
+              <span class="text-[11px] text-text-secondary block mt-0.5">
+                <FormattedDate date={post.data.pubDate} />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}

@@ -1,0 +1,212 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sidebar from "../components/Sidebar.astro";
+import { PROJECTS, getStatusDisplay } from "../data/projects";
+
+const title = "Projects";
+const description =
+  "Featured engineering projects, web applications, and edge services built by Stephane Mensah.";
+---
+
+<BaseLayout title={title} description={description} current="projects">
+  <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+    {/* Main Content */}
+    <div class="flex-1 min-w-0 w-full">
+      <header class="mb-10">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs uppercase font-sans font-semibold tracking-wider text-text-secondary">
+            Portfolio & Showcase
+          </span>
+        </div>
+        <h1 class="font-serif font-bold text-3xl sm:text-4xl text-text-main mb-3">
+          Projects
+        </h1>
+        <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl m-0">
+          A showcase of full-stack web applications, edge architectures, and developer tools I've engineered from scratch.
+        </p>
+      </header>
+
+      {/* Projects List */}
+      <div class="flex flex-col gap-14">
+        {
+          PROJECTS.map((project) => (
+            <article
+              id={project.id}
+              class="scroll-mt-8 rounded-2xl border border-border bg-border/5 overflow-hidden transition-all duration-300 hover:border-primary/40 shadow-sm"
+            >
+              {/* Project Browser Frame / Screenshot */}
+              <div class="border-b border-border bg-border/10">
+                {/* Mock Window Controls Header */}
+                <div class="flex items-center justify-between px-4 py-2.5 border-b border-border/60">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-400 dark:bg-rose-500/80 inline-block"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 dark:bg-amber-500/80 inline-block"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-400 dark:bg-green-500/80 inline-block"></span>
+                  </div>
+                  <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-background-body/70 dark:bg-background-body/40 border border-border text-[11px] font-mono text-text-secondary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-primary"
+                    >
+                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <span>{project.url.replace(/^https?:\/\//, "")}</span>
+                  </div>
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-[11px] font-sans text-primary font-medium hover:underline no-underline"
+                  >
+                    Open live ↗
+                  </a>
+                </div>
+
+                {/* Loaded Website Screenshot */}
+                <div class="relative group overflow-hidden bg-black/10 dark:bg-black/40 max-h-[480px]">
+                  <img
+                    src={project.image}
+                    alt={`${project.title} - Fully Loaded Website`}
+                    width="1200"
+                    height="800"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.01]"
+                  />
+                </div>
+              </div>
+
+              {/* Project Details Section */}
+              <div class="p-6 sm:p-8">
+                {/* Meta header */}
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-sans font-semibold bg-primary/10 text-primary border border-primary/20">
+                    {project.type}
+                  </span>
+                  {() => {
+                    const status = getStatusDisplay(project.status);
+                    return (
+                      <span class:list={["inline-flex items-center gap-1.5 text-xs font-sans font-medium", status.colorClass]}>
+                        <span class:list={["w-2 h-2 rounded-full", status.dotClass, status.pulse && "animate-pulse"]}></span>
+                        {status.label}
+                      </span>
+                    );
+                  }}
+                </div>
+
+                <h2 class="font-sans font-bold text-2xl sm:text-3xl text-text-main m-0 mb-2">
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="hover:text-primary transition-colors no-underline text-inherit"
+                  >
+                    {project.title}
+                  </a>
+                </h2>
+
+                <p class="font-serif italic text-base text-text-secondary mb-4 leading-relaxed">
+                  "{project.tagline}"
+                </p>
+
+                <p class="text-sm text-text-main leading-relaxed mb-6">
+                  {project.description}
+                </p>
+
+                {/* Key Highlights */}
+                {project.highlights && project.highlights.length > 0 && (
+                  <div class="mb-8">
+                    <h3 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary mb-3">
+                      Key Highlights & Capabilities
+                    </h3>
+                    <ul class="m-0 p-0 pl-4 list-disc space-y-1.5 text-xs sm:text-sm text-text-secondary leading-relaxed">
+                      {project.highlights.map((highlight) => (
+                        <li>{highlight}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Deep Technical Architecture Categories */}
+                <div class="mb-8 p-5 rounded-xl bg-border/5 border border-border">
+                  <h3 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary mb-4">
+                    Full Technical Architecture & Stack
+                  </h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {project.techStackCategories.map((cat) => (
+                      <div>
+                        <div class="font-sans font-semibold text-xs text-text-main mb-1">
+                          {cat.category}
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                          {cat.items.map((item) => (
+                            <span class="px-2 py-0.5 rounded bg-border/60 text-[11px] font-mono text-text-secondary">
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action CTA Buttons */}
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                  {project.links.map((link) => {
+                    const isPrimary = link.type === "primary";
+                    const isTelegram = link.type === "telegram";
+
+                    return (
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class:list={[
+                          "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-sans font-semibold transition-all no-underline shadow-sm",
+                          isPrimary
+                            ? "bg-primary text-white dark:bg-text-main dark:text-background-body hover:bg-primary/90 dark:hover:bg-text-main/90"
+                            : isTelegram
+                              ? "bg-[#2AABEE] text-white hover:bg-[#229ED9]"
+                              : "border border-border text-text-secondary hover:text-text-main hover:bg-border/60",
+                        ]}
+                      >
+                        {isTelegram && (
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            class="w-3.5 h-3.5"
+                          >
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .24z" />
+                          </svg>
+                        )}
+                        <span>{link.label}</span>
+                        {isPrimary && <span>↗</span>}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    {/* Sidebar */}
+    <Sidebar
+      showBio={true}
+      showConnect={true}
+      showProject={false}
+      showRecentPosts={true}
+    />
+  </div>
+</BaseLayout>

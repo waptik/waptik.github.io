@@ -33,6 +33,36 @@ export async function getPublishedPosts(): Promise<Post[]> {
   );
 }
 
+/**
+ * Returns recent posts with optional limit and exclusion (e.g. for current post in sidebar).
+ */
+export async function getRecentPosts(options?: {
+  limit?: number;
+  excludeId?: string;
+}): Promise<Post[]> {
+  const posts = await getPublishedPosts();
+  const filtered = options?.excludeId
+    ? posts.filter((p) => p.id !== options.excludeId)
+    : posts;
+
+  return typeof options?.limit === "number"
+    ? filtered.slice(0, options.limit)
+    : filtered;
+}
+
+/**
+ * Returns posts for the home page: latest 5 posts (3 if total posts <= 5).
+ */
+export async function getHomeRecentPosts(): Promise<{ posts: Post[]; total: number }> {
+  const posts = await getPublishedPosts();
+  const limit = posts.length <= 5 ? 3 : 5;
+  return {
+    posts: posts.slice(0, limit),
+    total: posts.length,
+  };
+}
+
+
 export function collectTags(posts: Post[]): TagCount[] {
   const bySlug = new Map<string, TagCount>();
 
@@ -76,4 +106,33 @@ export function getAdjacentPosts(
     previous: posts[index + 1],
     next: posts[index - 1],
   };
+}
+
+/**
+ * Returns posts related to the current post based on shared tags.
+ * Falls back to recent posts if not enough tag matches are found.
+ */
+export async function getRelatedPosts(
+  currentPost: Post,
+  limit: number = 3,
+): Promise<Post[]> {
+  const allPosts = await getPublishedPosts();
+  const candidates = allPosts.filter((p) => p.id !== currentPost.id);
+
+  const currentTags = new Set((currentPost.data.tags ?? []).map(tagSlug));
+
+  // Score each candidate by number of shared tags
+  const scored = candidates.map((post) => {
+    const postTags = (post.data.tags ?? []).map(tagSlug);
+    const commonTags = postTags.filter((t) => currentTags.has(t)).length;
+    return { post, score: commonTags };
+  });
+
+  // Sort by score descending (most matching tags first), then by date descending
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf();
+  });
+
+  return scored.slice(0, limit).map((s) => s.post);
 }

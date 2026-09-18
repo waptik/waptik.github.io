@@ -15,10 +15,10 @@ function loadFont(): Promise<Buffer> {
   return fontPromise;
 }
 
-const BG_COLOR = "#202122";
-const TEXT_MAIN = "#ffffff";
-const TEXT_MUTED = "rgba(255, 255, 255, 0.65)";
-const ACCENT = "#548e9b";
+const BG_COLOR = "#1a1a1c";
+const TEXT_MAIN = "#eeeef0";
+const TEXT_MUTED = "rgba(238, 238, 240, 0.55)";
+const ACCENT = "#9d9db5";
 
 interface OgOptions {
   title: string;

@@ -91,7 +91,7 @@ const permalink = Astro.site
                         href={`/tags/${tagSlug(tag)}/`}
                         class={`text-xs uppercase px-2 py-0.5 rounded transition-colors no-underline shadow-none ${
                           tagSlug(tag) === tagSlug(tagName)
-                            ? "bg-primary text-white"
+                            ? "bg-primary text-white dark:bg-text-main dark:text-background-body"
                             : "bg-text-secondary/10 text-text-secondary hover:text-primary hover:bg-primary/10"
                         }`}
                       >

@@ -1,53 +1,269 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SITE } from "../config";
+import FormattedDate from "../components/FormattedDate.astro";
+import Sidebar from "../components/Sidebar.astro";
+import { SITE, AUTHOR } from "../config";
+import { getFeaturedProject, getStatusDisplay } from "../data/projects";
+import { getHomeRecentPosts, getPublishedPosts } from "../utils/posts";
+import { readingTime } from "../utils/reading-time";
 
 const title = SITE.title;
 const description = SITE.description;
-const permalink = Astro.site?.href || "/";
+
+const { posts: recentPosts, total: totalPosts } = await getHomeRecentPosts();
+const allPosts = await getPublishedPosts();
+const otherPosts = allPosts.filter(
+  (post) => !recentPosts.some((rp) => rp.id === post.id),
+);
+const featuredProject = getFeaturedProject();
 ---
 
-<BaseLayout title={title} description={description} permalink={permalink}>
-  <div
-    class="flex flex-col min-[801px]:flex-row flex-1 items-center justify-center my-8 min-h-[400px]"
-  >
-    <div
-      class="px-4 text-center min-[801px]:text-left flex-none min-[801px]:flex-1 pb-8 min-[801px]:pb-0"
-    >
-      <h1 class="font-serif font-bold text-5xl sm:text-6xl mb-2 leading-tight">
-        Welcome to my website
-      </h1>
-      <p class="text-2xl max-[1200px]:text-xl my-4 leading-relaxed">
-        {SITE.tagline}
-      </p>
+<BaseLayout title={title} description={description} current="home">
+  <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+    {/* Main Content Column */}
+    <div class="flex-1 min-w-0 w-full">
+      {/* Hero Summary Section */}
+      <section class="mb-12">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-sans font-medium bg-primary/10 text-primary border border-primary/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            Building on the Edge
+          </span>
+          <span class="text-xs text-text-secondary font-sans">
+            Personal Site & Portfolio
+          </span>
+        </div>
+
+        <h1 class="font-serif font-bold text-3xl sm:text-4xl lg:text-5xl text-text-main mb-4 leading-tight">
+          Hey, I'm {AUTHOR.name}.
+        </h1>
+
+        <p class="text-lg text-text-main leading-relaxed mb-4">
+          I'm a full-stack engineer and writer passionate about high-performance web systems, distributed cloud architectures, and developer tooling.
+        </p>
+
+        <p class="text-sm text-text-secondary leading-relaxed mb-6">
+          This site is my digital garden where I share engineering deep dives, project postmortems, and practical tutorials. Take a look at what I'm actively building or explore my recent writings below.
+        </p>
+
+        <div class="flex items-center gap-3 flex-wrap text-xs font-sans font-semibold">
+          <a
+            href="/projects"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-white dark:bg-text-main dark:text-background-body hover:bg-primary/90 dark:hover:bg-text-main/90 transition-all shadow-sm no-underline"
+          >
+            <span>Explore Projects</span>
+            <span>&rarr;</span>
+          </a>
+          <a
+            href="/blog"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border text-text-main hover:bg-border/60 transition-all no-underline"
+          >
+            <span>Read Articles</span>
+          </a>
+          <a
+            href="/about"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-text-secondary hover:text-text-main transition-colors no-underline"
+          >
+            <span>About me</span>
+          </a>
+        </div>
+      </section>
+
+      {/* Featured Project Spotlight */}
+      {featuredProject && (
+        <section class="mb-14">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary m-0">
+                Featured Work
+              </h2>
+              <h3 class="font-sans font-bold text-xl text-text-main m-0 mt-0.5">
+                Current Project: {featuredProject.title}
+              </h3>
+            </div>
+            <a
+              href="/projects"
+              class="text-xs font-sans font-medium text-primary hover:underline no-underline"
+            >
+              All projects &rarr;
+            </a>
+          </div>
+
+          <div class="rounded-2xl border border-border bg-border/5 p-5 sm:p-6 transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+              {/* Project Screenshot Thumbnail */}
+              <a
+                href={`/projects#${featuredProject.id}`}
+                class="w-full md:w-5/12 rounded-xl overflow-hidden border border-border shadow-sm block group shrink-0 relative bg-border/10"
+                aria-label={`View ${featuredProject.title} details`}
+              >
+                <img
+                  src={featuredProject.image}
+                  alt={`${featuredProject.title} screenshot`}
+                  width="480"
+                  height="270"
+                  loading="eager"
+                  fetchpriority="high"
+                  class="w-full aspect-[16/10] object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span class="px-3 py-1 rounded-full bg-black/80 text-white text-xs font-sans font-medium shadow-md">
+                    View Project &rarr;
+                  </span>
+                </div>
+              </a>
+
+              {/* Project Info */}
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-sans font-semibold bg-primary/10 text-primary">
+                    {featuredProject.type}
+                  </span>
+                  {() => {
+                    const status = getStatusDisplay(featuredProject.status);
+                    return (
+                      <span class:list={["inline-flex items-center gap-1 text-[11px] font-sans font-medium", status.colorClass]}>
+                        <span class:list={["w-1.5 h-1.5 rounded-full", status.dotClass, status.pulse && "animate-pulse"]}></span>
+                        {status.label}
+                      </span>
+                    );
+                  }}
+                </div>
+
+                <h4 class="font-sans font-bold text-lg text-text-main m-0 mb-1.5">
+                  <a
+                    href={`/projects#${featuredProject.id}`}
+                    class="hover:text-primary transition-colors no-underline text-inherit"
+                  >
+                    {featuredProject.title}
+                  </a>
+                  <span class="text-sm font-normal text-text-secondary block sm:inline sm:ml-2">
+                    — {featuredProject.tagline}
+                  </span>
+                </h4>
+
+                <p class="text-xs text-text-secondary leading-relaxed m-0 mb-4 line-clamp-3">
+                  {featuredProject.description}
+                </p>
+
+                {/* Tech chips */}
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  {featuredProject.technologies.slice(0, 6).map((tech) => (
+                    <span class="px-2 py-0.5 rounded bg-border/60 text-text-main text-[11px] font-mono">
+                      {tech}
+                    </span>
+                  ))}
+                  {featuredProject.technologies.length > 6 && (
+                    <span class="px-1.5 py-0.5 text-text-secondary text-[10px] font-mono self-center">
+                      +{featuredProject.technologies.length - 6} more
+                    </span>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div class="flex items-center gap-3">
+                  <a
+                    href={featuredProject.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 text-xs font-sans font-semibold text-primary hover:underline no-underline"
+                  >
+                    <span>Visit Website</span>
+                    <span>↗</span>
+                  </a>
+                  <span class="text-text-secondary/40">•</span>
+                  <a
+                    href={`/projects#${featuredProject.id}`}
+                    class="text-xs font-sans font-medium text-text-secondary hover:text-text-main transition-colors no-underline"
+                  >
+                    Architecture Breakdown &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Latest Posts Section */}
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary m-0">
+              Writing
+            </h2>
+            <h3 class="font-sans font-bold text-2xl text-text-main m-0 mt-0.5">
+              Recent Posts
+            </h3>
+          </div>
+          <a
+            href="/blog"
+            class="text-xs font-sans font-semibold text-primary hover:underline no-underline"
+          >
+            View all {totalPosts} posts &rarr;
+          </a>
+        </div>
+
+        <div class="flex flex-col divide-y divide-border">
+          {recentPosts.map((post) => {
+            const minutes = readingTime(post.body);
+            return (
+              <article class="py-6 first:pt-0 last:pb-0 group">
+                <a
+                  href={`/blog/${post.id}/`}
+                  class="block no-underline text-inherit"
+                >
+                  <div class="flex items-center gap-2 text-xs text-text-secondary font-sans mb-1.5">
+                    <FormattedDate date={post.data.pubDate} />
+                    <span>&bull;</span>
+                    <span>{minutes} min read</span>
+                    {post.data.tags && post.data.tags.length > 0 && (
+                      <>
+                        <span class="hidden sm:inline">&bull;</span>
+                        <span class="hidden sm:inline text-primary font-medium">
+                          #{post.data.tags[0]}
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  <h4 class="font-sans font-bold text-lg sm:text-xl text-text-main group-hover:text-primary transition-colors m-0 mb-2 leading-snug">
+                    {post.data.title}
+                  </h4>
+
+                  <p class="text-sm text-text-secondary leading-relaxed m-0 line-clamp-2">
+                    {post.data.description}
+                  </p>
+                </a>
+              </article>
+            );
+          })}
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-border flex justify-between items-center">
+          <span class="text-xs text-text-secondary font-sans">
+            Showing {recentPosts.length} of {totalPosts} articles
+          </span>
+          <a
+            href="/blog"
+            class="inline-flex items-center gap-1 text-xs font-sans font-semibold text-primary hover:underline no-underline"
+          >
+            <span>View all posts</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      </section>
     </div>
 
-    <div class="mx-4 text-center shrink-0">
-      <picture class="block min-h-[250px]">
-        <source
-          srcset="/assets/home-illustration.webp"
-          media="(min-width: 600px)"
-        />
-        <img
-          class="w-full max-w-[550px] max-[1200px]:max-w-[400px] mb-4"
-          alt="Illustration of person reading a book"
-          src="/assets/home-illustration-small.webp"
-          width="550"
-          height="466"
-        />
-      </picture>
-      <p class="text-xs italic text-left">
-        Illustration by{" "}
-        <a
-          href="https://icons8.com/illustrations/author/5c07e68d82bcbc0092519bb6"
-          target="_blank"
-          rel="noopener">Icons 8</a>{" "}
-        from{" "}
-        <a
-          href="https://icons8.com/illustrations"
-          target="_blank"
-          rel="noopener">Ouch!</a>
-      </p>
-    </div>
+    {/* Sidebar Column */}
+    <Sidebar
+      showBio={true}
+      showConnect={true}
+      showProject={false}
+      showRecentPosts={otherPosts.length > 0}
+      posts={otherPosts}
+      postsTitle="Other Posts"
+      postsLimit={4}
+    />
   </div>
 </BaseLayout>

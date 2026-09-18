@@ -1,41 +1,83 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Sidebar from "../components/Sidebar.astro";
+import SocialLinks from "../components/SocialLinks.astro";
 import { AUTHOR } from "../config";
 
 const title = "About";
-const description = `About ${AUTHOR.name}`;
-const permalink = Astro.site ? `${Astro.site.href}about` : "/about";
+const description = `About ${AUTHOR.name} — Full-stack engineer, software creator, and writer.`;
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  permalink={permalink}
-  current="about"
->
-  <div class="container">
-    <h1>About</h1>
-    <figure
-      class="float-right max-w-[300px] -mt-12 -mr-28 mb-8 ml-8 max-[1020px]:float-none max-[1020px]:my-0 max-[1020px]:mx-auto max-[1020px]:mb-8"
-    >
-      <img
-        src={AUTHOR.avatar}
-        alt={AUTHOR.name}
-        width="330"
-        height="330"
-        class="rounded-full object-cover object-top aspect-square mb-6"
-      />
-    </figure>
-    <p>
-      Hi! I'm {AUTHOR.name}, {AUTHOR.bio}
-    </p>
-    <p>
-      This site serves as both my portfolio and blog where I share my thoughts,
-      tutorials, and insights from my journey in tech.
-    </p>
-    <p>
-      Feel free to reach out through any of the social platforms linked in the
-      footer, or check out my latest posts on the blog.
-    </p>
+<BaseLayout title={title} description={description} current="about">
+  <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+    {/* Main Content */}
+    <div class="flex-1 min-w-0 w-full">
+      <h1 class="font-serif font-bold text-3xl sm:text-4xl text-text-main mb-8">
+        About me
+      </h1>
+
+      {/* Profile Bio Section */}
+      <div class="flex flex-col sm:flex-row gap-6 items-start mb-10">
+        <img
+          src={AUTHOR.avatar}
+          alt={AUTHOR.name}
+          width="140"
+          height="140"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          class="w-32 h-32 rounded-2xl shrink-0 object-cover -rotate-3 hover:rotate-0 transition-all duration-500 ring-4 ring-primary/30 ring-offset-4 ring-offset-background-body shadow-md"
+        />
+        <div>
+          <h2 class="font-sans font-bold text-xl text-text-main mb-2">
+            {AUTHOR.name}
+          </h2>
+          <p class="text-sm sm:text-base text-text-secondary leading-relaxed m-0 mb-3">
+            Hey! I'm Stephane, a software developer and writer passionate about building fast, resilient applications on the web.
+          </p>
+          <p class="text-sm sm:text-base text-text-secondary leading-relaxed m-0">
+            I specialize in modern full-stack architectures, edge computing (Cloudflare Workers), distributed databases, and high-productivity developer tooling.
+          </p>
+        </div>
+      </div>
+
+      {/* What I Do Section */}
+      <section class="mb-10">
+        <h2 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary mb-4">
+          What I Do & Build
+        </h2>
+        <div class="space-y-4 text-sm sm:text-base text-text-main leading-relaxed">
+          <p class="m-0">
+            My engineering work spans the entire spectrum from responsive frontend interfaces to cloud edge infrastructure. I believe in choosing the right tool for the job: pairing type-safe frameworks like <strong>TanStack Start</strong> and <strong>Astro</strong> with lightweight, hyper-fast backends like <strong>Hono</strong> and <strong>Go</strong>.
+          </p>
+          <p class="m-0">
+            Recently, I've been focused on building <a href="/projects#unrollit" class="text-primary hover:underline font-medium">unrollit.xyz</a>, a high-throughput social thread expansion and media archiving utility. It harnesses Cloudflare Workers with Queues, Workflows, KV, and R2 to provide instant, sub-second thread rendering and video downloads.
+          </p>
+          <p class="m-0">
+            When I'm not writing code for production, I write detailed articles on this blog to break down complex architectural patterns, debugging adventures, and devops workflows.
+          </p>
+        </div>
+      </section>
+
+      {/* Connect Section Inspired by Chris Pennington */}
+      <section class="mb-10">
+        <h2 class="font-sans font-bold text-xs uppercase tracking-wider text-text-secondary mb-4">
+          Connect
+        </h2>
+        <p class="text-xs text-text-secondary mb-4">
+          I'm active across multiple platforms. Feel free to reach out, follow my updates, or chat about tech:
+        </p>
+
+        <SocialLinks layout="vertical" />
+      </section>
+    </div>
+
+    {/* Sidebar */}
+    <Sidebar
+      showBio={false}
+      showConnect={false}
+      showProject={true}
+      showRecentPosts={true}
+    />
   </div>
 </BaseLayout>

@@ -1,0 +1,29 @@
+---
+import type { SocialPlatform } from "../config";
+import { isPlatform } from "../config";
+import GithubIcon from "./icons/Github.astro";
+import TwitterIcon from "./icons/Twitter.astro";
+import BlueskyIcon from "./icons/Bluesky.astro";
+import TelegramIcon from "./icons/Telegram.astro";
+import YoutubeIcon from "./icons/Youtube.astro";
+import LinkedinIcon from "./icons/Linkedin.astro";
+import EmailIcon from "./icons/Email.astro";
+import RssIcon from "./icons/Rss.astro";
+
+export interface Props {
+  platform: SocialPlatform | string;
+  size?: number | string;
+  class?: string;
+}
+
+const { platform, size = 18, class: className = "" } = Astro.props;
+---
+
+{isPlatform(platform, "github") && <GithubIcon size={size} class={className} />}
+{isPlatform(platform, "twitter") && <TwitterIcon size={size} class={className} />}
+{isPlatform(platform, "bluesky") && <BlueskyIcon size={size} class={className} />}
+{isPlatform(platform, "telegram") && <TelegramIcon size={size} class={className} />}
+{isPlatform(platform, "youtube") && <YoutubeIcon size={size} class={className} />}
+{isPlatform(platform, "linkedin") && <LinkedinIcon size={size} class={className} />}
+{isPlatform(platform, "email") && <EmailIcon size={size} class={className} />}
+{isPlatform(platform, "rss") && <RssIcon size={size} class={className} />}

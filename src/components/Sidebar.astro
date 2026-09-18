@@ -1,0 +1,96 @@
+---
+import { AUTHOR } from "../config";
+import SocialLinks from "./SocialLinks.astro";
+import ProjectWidget from "./ProjectWidget.astro";
+import RecentPostsWidget from "./RecentPostsWidget.astro";
+
+import type { Post } from "../utils/posts";
+
+export interface Props {
+  showBio?: boolean;
+  showConnect?: boolean;
+  showProject?: boolean;
+  showRecentPosts?: boolean;
+  posts?: Post[];
+  postsTitle?: string;
+  postsLimit?: number;
+  currentPostSlug?: string;
+  class?: string;
+}
+
+const {
+  showBio = true,
+  showConnect = true,
+  showProject = true,
+  showRecentPosts = true,
+  posts,
+  postsTitle = "Recent Posts",
+  postsLimit = 4,
+  currentPostSlug,
+  class: className = "",
+} = Astro.props;
+---
+
+<aside
+  class:list={[
+    "w-full lg:w-72 shrink-0 self-stretch pt-8 border-t border-border lg:pt-0 lg:border-t-0 lg:border-l lg:border-border lg:pl-8 xl:pl-12",
+    className,
+  ]}
+  aria-label="Sidebar"
+>
+  <div class="sticky top-8 flex flex-col gap-8">
+    {
+      showBio && (
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-3">
+            <img
+              src={AUTHOR.avatar}
+              alt={AUTHOR.name}
+              width="48"
+              height="48"
+              loading="lazy"
+              decoding="async"
+              class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/40 -rotate-3 hover:rotate-0 transition-transform duration-300"
+            />
+            <div>
+              <div class="font-sans font-bold text-sm text-text-main leading-tight">
+                {AUTHOR.name}
+              </div>
+              <div class="text-xs text-text-secondary leading-snug">
+                {AUTHOR.role}
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-text-secondary leading-relaxed m-0">
+            {AUTHOR.bio}
+          </p>
+        </div>
+      )
+    }
+
+    {
+      showConnect && (
+        <div>
+          <h2 class="text-xs font-sans font-bold uppercase tracking-wider text-text-secondary mb-3">
+            Let's Connect
+          </h2>
+          <SocialLinks layout="horizontal" />
+        </div>
+      )
+    }
+
+    {showProject && <ProjectWidget />}
+
+    {
+      showRecentPosts && (
+        <RecentPostsWidget
+          posts={posts}
+          currentPostSlug={currentPostSlug}
+          title={postsTitle}
+          limit={postsLimit}
+        />
+      )
+    }
+  </div>
+</aside>
+

@@ -1,0 +1,85 @@
+---
+import { SOCIAL, type SocialLink } from "../config";
+import SocialIcon from "./SocialIcon.astro";
+
+export interface Props {
+  layout?: "horizontal" | "vertical";
+  links?: SocialLink[];
+  showLabels?: boolean;
+  showHandles?: boolean;
+  iconSize?: number;
+  class?: string;
+  itemClass?: string;
+}
+
+const {
+  layout = "horizontal",
+  links = SOCIAL,
+  showLabels = layout === "vertical",
+  showHandles = layout === "vertical",
+  iconSize = 18,
+  class: className = "",
+  itemClass = "",
+} = Astro.props;
+---
+
+{
+  layout === "horizontal" ? (
+    <div class:list={["flex flex-wrap items-center gap-1", className]}>
+      {links.map((link) => (
+        <a
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class:list={[
+            "p-2 rounded-lg text-text-secondary hover:text-primary hover:bg-border/60 transition-all duration-200 inline-flex items-center gap-2",
+            itemClass,
+          ]}
+          aria-label={link.label}
+          title={link.label}
+        >
+          <SocialIcon platform={link.platform} size={iconSize} />
+          {showLabels && (
+            <span class="text-xs font-sans font-medium">{link.label}</span>
+          )}
+        </a>
+      ))}
+    </div>
+  ) : (
+    <ul class:list={["flex flex-col gap-2.5 p-0 m-0 list-none", className]}>
+      {links.map((link) => (
+        <li class="m-0 p-0">
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class:list={[
+              "flex items-center gap-3 p-3 rounded-xl border border-border hover:border-primary/40 hover:bg-border/5 transition-all no-underline text-text-main group",
+              itemClass,
+            ]}
+          >
+            <div class="text-text-secondary group-hover:text-primary transition-colors shrink-0">
+              <SocialIcon platform={link.platform} size={iconSize} />
+            </div>
+            {showLabels && (
+              <span class="font-sans font-semibold text-xs sm:text-sm text-text-main w-24 sm:w-28">
+                {link.label}
+              </span>
+            )}
+            {showHandles && link.handle && (
+              <span class="text-xs sm:text-sm text-text-secondary group-hover:text-primary transition-colors font-mono">
+                {link.handle}
+              </span>
+            )}
+            <span
+              class="ml-auto text-text-secondary/40 group-hover:text-primary transition-colors text-xs"
+              aria-hidden="true"
+            >
+              &rarr;
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

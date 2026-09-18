@@ -4,6 +4,7 @@ description: "How a collision between Rails 8's cssbundling-rails, Vite+'s Bun s
 pubDate: 2026-09-17
 heroImage: "/blog-placeholder-3.jpg"
 tags: ["rails", "bun", "yarn", "debugging"]
+draft: false
 ---
 
 This is an updated version of my original post about debugging a toolchain

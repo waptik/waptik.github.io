@@ -11,17 +11,21 @@ const { previous, next } = Astro.props;
 
 {
   (previous || next) && (
-    <nav class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-12 pt-8 border-t border-text-secondary/30" aria-label="More posts">
+    <nav
+      class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-10 pt-8 border-t border-border"
+      aria-label="Adjacent articles"
+    >
       {previous ? (
         <a
-          class="group flex flex-col p-4 rounded-lg border border-text-secondary/20 hover:border-primary transition-all no-underline shadow-none"
+          class="group flex flex-col p-4 rounded-xl border border-border hover:border-primary/40 bg-border/5 hover:bg-border/10 transition-all no-underline shadow-sm"
           href={`/blog/${previous.id}/`}
           rel="prev"
         >
-          <span class="font-sans text-xs uppercase tracking-wider text-text-secondary mb-1">
-            ← Previous
+          <span class="font-sans text-xs uppercase font-bold tracking-wider text-text-secondary mb-1.5 flex items-center gap-1 group-hover:text-primary transition-colors">
+            <span>&larr;</span>
+            <span>Previous Article</span>
           </span>
-          <span class="font-sans font-bold text-text-main group-hover:text-primary transition-colors line-clamp-2">
+          <span class="font-sans font-bold text-sm sm:text-base text-text-main group-hover:text-primary transition-colors line-clamp-2 leading-snug">
             {previous.data.title}
           </span>
         </a>
@@ -31,14 +35,15 @@ const { previous, next } = Astro.props;
 
       {next && (
         <a
-          class="group flex flex-col sm:text-right p-4 rounded-lg border border-text-secondary/20 hover:border-primary transition-all no-underline shadow-none"
+          class="group flex flex-col sm:text-right p-4 rounded-xl border border-border hover:border-primary/40 bg-border/5 hover:bg-border/10 transition-all no-underline shadow-sm"
           href={`/blog/${next.id}/`}
           rel="next"
         >
-          <span class="font-sans text-xs uppercase tracking-wider text-text-secondary mb-1">
-            Next →
+          <span class="font-sans text-xs uppercase font-bold tracking-wider text-text-secondary mb-1.5 flex items-center justify-start sm:justify-end gap-1 group-hover:text-primary transition-colors">
+            <span>Next Article</span>
+            <span>&rarr;</span>
           </span>
-          <span class="font-sans font-bold text-text-main group-hover:text-primary transition-colors line-clamp-2">
+          <span class="font-sans font-bold text-sm sm:text-base text-text-main group-hover:text-primary transition-colors line-clamp-2 leading-snug">
             {next.data.title}
           </span>
         </a>

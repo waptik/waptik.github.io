@@ -4,10 +4,10 @@ import BaseLayout from "./BaseLayout.astro";
 import Bio from "../components/Bio.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import PostNav from "../components/PostNav.astro";
-import { AUTHOR, SOCIAL, SITE, BLOG, NAV } from "../config";
+import RecentPostsWidget from "../components/RecentPostsWidget.astro";
+import { BLOG } from "../config";
 import { tagSlug, type Post } from "../utils/posts";
-
-const today = new Date();
+import { formatDate } from "../utils/date";
 
 export interface Props {
   title: string;
@@ -21,6 +21,7 @@ export interface Props {
   previous?: Post;
   next?: Post;
   ogImage?: string;
+  relatedPosts?: Post[];
 }
 
 const {
@@ -35,12 +36,15 @@ const {
   previous,
   next,
   ogImage,
+  relatedPosts = [],
 } = Astro.props;
 
 const hasToc =
   BLOG.showTableOfContents &&
   headings.filter((h) => h.depth >= 2 && h.depth <= 3).length >=
     BLOG.tocMinHeadings;
+
+const hasSidebar = hasToc || (relatedPosts && relatedPosts.length > 0);
 ---
 
 <BaseLayout
@@ -48,7 +52,7 @@ const hasToc =
   description={description}
   permalink={permalink}
   current="blog"
-  hideFooter={true}
+  hideFooter={false}
   ogImage={ogImage}
   article={{
     publishedTime: pubDate.toISOString(),
@@ -58,20 +62,13 @@ const hasToc =
 >
   <header class="text-center max-w-3xl mx-auto mb-8">
     <p class="uppercase font-sans font-semibold text-text-secondary text-sm">
-      {
-        pubDate.toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        })
-      }
+      {formatDate(pubDate)}
       {readingTime && ` ~ ${readingTime}`}
-      {
-        updatedDate &&
-          ` (Updated ${updatedDate.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })})`
-      }
+      {updatedDate && ` (Updated: ${formatDate(updatedDate)})`}
     </p>
-    <h1 class="mb-4">{title}</h1>
+    <h1 class="font-serif font-bold text-3xl sm:text-5xl mt-2 mb-4">
+      {title}
+    </h1>
 
     {
       tags && tags.length > 0 && (
@@ -79,7 +76,7 @@ const hasToc =
           {tags.map((tag) => (
             <a
               href={`/tags/${tagSlug(tag)}/`}
-              class="text-xs font-sans font-semibold uppercase px-2.5 py-1 rounded bg-text-secondary/10 text-text-secondary hover:text-primary hover:bg-primary/10 transition-colors no-underline shadow-none"
+              class="tag-chip font-sans text-xs px-2.5 py-1 rounded-full border border-primary/30 text-primary hover:bg-primary hover:text-white transition-colors no-underline shadow-none"
             >
               #{tag}
             </a>
@@ -91,15 +88,15 @@ const hasToc =
     <hr class="min-w-[100px] w-[30%] mx-auto mt-6" />
   </header>
 
-  <div class="w-full max-w-[1100px] mx-auto px-4">
+  <div class="w-full">
     <div
       class={
-        hasToc
-          ? "grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-10 items-start justify-center"
+        hasSidebar
+          ? "flex flex-col lg:flex-row gap-8 lg:gap-12"
           : "max-w-[42em] mx-auto"
       }
     >
-      <div class="min-w-0 max-w-[42em] mx-auto lg:mx-0 w-full">
+      <div class="flex-1 min-w-0">
         {
           hasToc && (
             <div class="block lg:hidden mb-8 p-4 rounded-lg bg-text-secondary/5 border border-text-secondary/20">
@@ -114,93 +111,60 @@ const hasToc =
 
         <PostNav previous={previous} next={next} />
 
-        <hr />
         <Bio />
 
-        <footer class="blog-post-footer mt-12 pt-8 border-t border-text-secondary">
-          <div
-            class="footer-content grid grid-cols-3 gap-8 mb-8 max-md:grid-cols-1 max-md:gap-6"
+        {
+          relatedPosts.length > 0 && (
+            <div class="block lg:hidden my-8 pt-6 border-t border-border">
+              <RecentPostsWidget
+                posts={relatedPosts}
+                title="Related Posts"
+                limit={3}
+              />
+            </div>
+          )
+        }
+
+        <button
+          id="back-to-top"
+          type="button"
+          aria-label="Back to top"
+          class="fixed bottom-6 right-6 z-40 p-2.5 rounded-full bg-background-body border border-border text-text-secondary hover:text-primary shadow-lg hover:scale-105 transition-all opacity-0 pointer-events-none data-[visible=true]:opacity-100 data-[visible=true]:pointer-events-auto"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
           >
-            <div class="footer-section">
-              <h3 class="text-base mb-4 text-text-main">Let's Connect</h3>
-              <div class="footer-links flex flex-col gap-2">
-                {
-                  SOCIAL.map((social) => (
-                    <a
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.label}
-                      class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
-                    >
-                      {social.label}
-                    </a>
-                  ))
-                }
-              </div>
-            </div>
-
-            <div class="footer-section">
-              <h3 class="text-base mb-4 text-text-main">Site Links</h3>
-              <div class="footer-links flex flex-col gap-2">
-                {
-                  NAV.map((item) => (
-                    <a
-                      href={item.href}
-                      class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
-                    >
-                      {item.label}
-                    </a>
-                  ))
-                }
-                <a
-                  href="/rss.xml"
-                  class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
-                  >RSS Feed</a
-                >
-                <a
-                  href="/sitemap-index.xml"
-                  class="no-underline transition-colors duration-200 text-text-secondary hover:text-primary"
-                  >Sitemap</a
-                >
-              </div>
-            </div>
-
-            <div class="footer-section">
-              <h3 class="text-base mb-4 text-text-main">About</h3>
-              <p class="text-sm leading-relaxed text-text-secondary">
-                {AUTHOR.bio}
-              </p>
-            </div>
-          </div>
-
-          <div
-            class="footer-bottom flex justify-between items-center pt-8 border-t border-text-secondary max-md:flex-col max-md:gap-4 max-md:text-center"
-          >
-            <p class="m-0 text-sm text-text-secondary">
-              &copy; {today.getFullYear()}
-              {SITE.title}. All rights reserved. Powered by <a
-                href="https://astro.build"
-                target="_blank"
-                rel="noopener"
-                class="underline shadow-none hover:text-primary">Astro</a
-              >.
-            </p>
-            <button
-              id="back-to-top"
-              aria-label="Back to top"
-              class="text-white border-none w-10 h-10 rounded-full cursor-pointer text-xl transition-colors duration-200 bg-primary hover:bg-text-main"
-            >
-              ↑
-            </button>
-          </div>
-        </footer>
+            <path d="m18 15-6-6-6 6"></path>
+          </svg>
+        </button>
       </div>
 
       {
-        hasToc && (
-          <aside class="hidden lg:block sticky top-8">
-            <TableOfContents headings={headings} />
+        hasSidebar && (
+          <aside
+            class="w-full lg:w-72 shrink-0 self-stretch pt-8 border-t border-border lg:pt-0 lg:border-t-0 lg:border-l lg:border-border lg:pl-8 xl:pl-12"
+            aria-label="Sidebar"
+          >
+            <div class="sticky top-8 flex flex-col gap-8">
+              {hasToc && <TableOfContents headings={headings} />}
+              {relatedPosts.length > 0 && (
+                <div class={hasToc ? "pt-6 border-t border-border" : ""}>
+                  <RecentPostsWidget
+                    posts={relatedPosts}
+                    title="Related Posts"
+                    limit={3}
+                  />
+                </div>
+              )}
+            </div>
           </aside>
         )
       }
@@ -209,8 +173,26 @@ const hasToc =
 </BaseLayout>
 
 <script>
-  const backToTop = document.getElementById("back-to-top");
-  backToTop?.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  const setupBackToTop = () => {
+    const btn = document.getElementById("back-to-top");
+    if (!btn) return;
+
+    const onScroll = () => {
+      if (window.scrollY > 400) {
+        btn.setAttribute("data-visible", "true");
+      } else {
+        btn.removeAttribute("data-visible");
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  };
+
+  setupBackToTop();
+  document.addEventListener("astro:after-swap", setupBackToTop);
 </script>

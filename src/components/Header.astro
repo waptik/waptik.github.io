@@ -5,7 +5,9 @@ import Nav from "./Nav.astro";
 const { current = "" } = Astro.props;
 ---
 
-<header class="flex mx-auto max-w-[1400px] p-8 w-full max-sm:px-0">
+<header
+  class="flex items-center justify-between mx-auto max-w-5xl px-6 py-6 w-full gap-4"
+>
   <Logo />
   <Nav current={current} />
 </header>

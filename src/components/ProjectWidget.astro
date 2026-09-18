@@ -1,0 +1,57 @@
+---
+import { getFeaturedProject, getStatusDisplay, type Project } from "../data/projects";
+
+export interface Props {
+  project?: Project;
+  class?: string;
+}
+
+const { project = getFeaturedProject(), class: className = "" } = Astro.props;
+const status = project ? getStatusDisplay(project.status) : null;
+---
+
+{
+  project && status && (
+    <div
+      class:list={[
+        "rounded-xl p-4 border border-primary/20 bg-primary/5",
+        className,
+      ]}
+    >
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[11px] uppercase tracking-wider font-semibold text-primary flex items-center gap-1.5">
+          <span class:list={["w-2 h-2 rounded-full", status.dotClass, status.pulse && "animate-pulse"]} />
+          Current Project
+        </span>
+        <span class:list={["text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-primary/10", status.colorClass]}>
+          {status.label}
+        </span>
+      </div>
+      <a
+        href={`/projects#${project.id}`}
+        class="block font-sans font-bold text-sm text-text-main hover:text-primary transition-colors mb-1 no-underline"
+      >
+        {project.title}
+      </a>
+      <p class="text-xs text-text-secondary leading-snug m-0 line-clamp-2">
+        {project.description}
+      </p>
+      <div class="mt-3 flex items-center justify-between text-xs">
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-primary font-semibold hover:underline flex items-center gap-1 no-underline"
+        >
+          Open App ↗
+        </a>
+        <a
+          href="/projects"
+          class="text-text-secondary hover:text-text-main transition-colors no-underline text-[11px]"
+        >
+          All projects &rarr;
+        </a>
+      </div>
+    </div>
+  )
+}

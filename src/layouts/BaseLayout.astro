@@ -2,6 +2,7 @@
 import "../styles/tailwind.css";
 
 import BaseHead, { type ArticleMeta } from "../components/BaseHead.astro";
+import type { Props as SeoProps } from "../components/Seo.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
@@ -13,7 +14,9 @@ export interface Props {
   hideFooter?: boolean;
   ogImage?: string;
   article?: ArticleMeta;
+  seo?: Partial<SeoProps>;
 }
+
 const {
   title,
   description,
@@ -22,6 +25,7 @@ const {
   hideFooter = false,
   ogImage,
   article,
+  seo,
 } = Astro.props;
 ---
 
@@ -33,19 +37,24 @@ const {
       permalink={permalink}
       ogImage={ogImage}
       article={article}
+      seo={seo}
     />
   </head>
-  <body>
+  <body class="bg-background-body text-text-main font-serif antialiased min-h-screen">
     <div class="flex flex-col min-h-screen">
       <Header current={current} />
 
       <main
-        class="flex-1 relative mx-auto max-w-[1400px] py-4 px-8 max-sm:px-4 box-border w-full flex flex-col"
+        class="flex-1 relative mx-auto max-w-5xl px-6 py-6 box-border w-full flex flex-col"
       >
         <slot />
       </main>
 
-      {!hideFooter && <Footer />}
+      {!hideFooter && (
+        <div class="mx-auto max-w-5xl px-6 w-full">
+          <Footer />
+        </div>
+      )}
     </div>
   </body>
 </html>

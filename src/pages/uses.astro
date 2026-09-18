@@ -1,0 +1,217 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Sidebar from "../components/Sidebar.astro";
+
+const title = "Uses";
+const description =
+  "Hardware, developer tools, editor setup, frameworks, and cloud infrastructure used by Stephane Mensah.";
+
+const sections = [
+  {
+    category: "Hardware & Workstation",
+    items: [
+      {
+        name: "Apple MacBook Pro (Apple Silicon)",
+        description:
+          "My primary daily driver. Whisper quiet, outstanding battery life, and effortless local container performance.",
+      },
+      {
+        name: "High-DPI External Display",
+        description:
+          "Crisp typography rendering and ample screen estate for side-by-side terminal, editor, and browser debugging.",
+      },
+      {
+        name: "Mechanical Keyboard & Precision Mouse",
+        description:
+          "Tactile switches for long coding sessions and smooth multi-gesture navigation.",
+      },
+      {
+        name: "Noise-Canceling Headphones",
+        description:
+          "Crucial for entering flow state and shutting out distractions during complex engineering tasks.",
+      },
+    ],
+  },
+  {
+    category: "Editor & Terminal",
+    items: [
+      {
+        name: "Modern Code Editors (VS Code / Antigravity / Zed)",
+        description:
+          "Fast, minimalist editor environments with tailored dark mode palettes, minimal UI chrome, and robust language servers.",
+      },
+      {
+        name: "SF Mono & Fira Code Fonts",
+        description:
+          "Clean monospace typography with clear character distinction and subtle coding ligatures.",
+      },
+      {
+        name: "Zsh & Starship Shell",
+        description:
+          "Clean, fast prompt showing git status, node version, and execution times without terminal latency.",
+      },
+      {
+        name: "Ripgrep & Fzf",
+        description:
+          "Instant project-wide regex searching and fuzzy-finding across repositories.",
+      },
+    ],
+  },
+  {
+    category: "Core Stacks & Frameworks",
+    items: [
+      {
+        name: "TanStack Start & React",
+        description:
+          "Full-stack React framework with server-side streaming, fine-grained routing, and end-to-end type safety.",
+      },
+      {
+        name: "Astro (v7+)",
+        description:
+          "The engine behind this portfolio and blog. Zero unnecessary client JS, blazing-fast static builds, and native Markdown/MDX.",
+      },
+      {
+        name: "Hono",
+        description:
+          "Ultrafast, lightweight web framework running seamlessly across Cloudflare Workers, Node.js, and edge runtimes.",
+      },
+      {
+        name: "Go (Golang)",
+        description:
+          "For high-concurrency proxies, microservices, and network utilities requiring minimal memory footprint.",
+      },
+      {
+        name: "Tailwind CSS (v4)",
+        description:
+          "Utility-first styling with modern CSS variables, fluid color tokens, and instant Vite integration.",
+      },
+      {
+        name: "TypeScript",
+        description:
+          "Strict typing across all layers, from database schemas to frontend components.",
+      },
+    ],
+  },
+  {
+    category: "Cloud, Edge & Infrastructure",
+    items: [
+      {
+        name: "Cloudflare Workers & Edge Ecosystem",
+        description:
+          "Global serverless compute with Workers KV, R2 Object Storage, Queues, Workflows, and Edge Cache for sub-50ms worldwide latency.",
+      },
+      {
+        name: "Alchemy (alchemy.dev)",
+        description:
+          "Modern Infrastructure as Code (IaC) tool used to declare, version, and deploy Cloudflare resources reproducibly.",
+      },
+      {
+        name: "Turso (libSQL)",
+        description:
+          "Edge-replicated SQL database built on SQLite with instantaneous cold starts and zero maintenance.",
+      },
+      {
+        name: "Appwrite",
+        description:
+          "Backend-as-a-service providing secure asset storage and background server functions.",
+      },
+      {
+        name: "Coolify (Self-Hosted PaaS)",
+        description:
+          "Open-source cloud manager used on VPS instances for orchestrating Docker containers, proxies, and web services.",
+      },
+      {
+        name: "Upstash Redis",
+        description:
+          "Serverless, low-latency Redis for global rate limiting, session persistence, and API caching.",
+      },
+      {
+        name: "Doppler",
+        description:
+          "Centralized secrets orchestration for continuous, encrypted environment variable sync across teams and environments.",
+      },
+    ],
+  },
+  {
+    category: "Productivity & Utilities",
+    items: [
+      {
+        name: "Raycast",
+        description:
+          "Spotlight replacement with custom extensions, window management, and rapid clipboard history.",
+      },
+      {
+        name: "Telegram Bots & API",
+        description:
+          "My favorite conversational interface for alerting, real-time control, and services like @UnrollItBot.",
+      },
+      {
+        name: "Arc & Chrome",
+        description:
+          "Modern tab management, profile separation, and powerful devtools for performance audits.",
+      },
+      {
+        name: "Obsidian",
+        description:
+          "Local-first markdown knowledge base for architectural sketches, technical notes, and draft outlines.",
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description} current="uses">
+  <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+    {/* Main Content */}
+    <div class="flex-1 min-w-0 w-full">
+      <header class="mb-10">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs uppercase font-sans font-semibold tracking-wider text-text-secondary">
+            Setup & Tools
+          </span>
+        </div>
+        <h1 class="font-serif font-bold text-3xl sm:text-4xl text-text-main mb-3">
+          What I Use
+        </h1>
+        <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl m-0">
+          A living breakdown of the hardware, development setup, frameworks, and cloud services I rely on to build modern software.
+        </p>
+      </header>
+
+      {/* Categorized List */}
+      <div class="flex flex-col gap-10">
+        {
+          sections.map((section) => (
+            <section class="rounded-2xl border border-border bg-border/5 p-6 sm:p-7">
+              <h2 class="font-sans font-bold text-base sm:text-lg text-text-main mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-primary" />
+                <span>{section.category}</span>
+              </h2>
+
+              <ul class="flex flex-col gap-4 m-0 p-0 list-none">
+                {section.items.map((item) => (
+                  <li class="m-0 p-0 border-b border-border/60 last:border-0 pb-4 last:pb-0">
+                    <h3 class="font-sans font-bold text-sm text-text-main m-0 mb-1">
+                      {item.name}
+                    </h3>
+                    <p class="text-xs sm:text-sm text-text-secondary leading-relaxed m-0">
+                      {item.description}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+
+    {/* Sidebar */}
+    <Sidebar
+      showBio={true}
+      showConnect={true}
+      showProject={true}
+      showRecentPosts={true}
+    />
+  </div>
+</BaseLayout>

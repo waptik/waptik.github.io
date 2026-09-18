@@ -10,11 +10,31 @@ export interface NavItem {
   href: string;
 }
 
+export type SocialPlatform =
+  | "github"
+  | "twitter"
+  | "bluesky"
+  | "telegram"
+  | "youtube"
+  | "linkedin"
+  | "email"
+  | "rss";
+
 export interface SocialLink {
+  platform: SocialPlatform;
   /** Shown as the link text, so keep it short. */
   label: string;
   href: string;
+  /** Profile username/handle shown in detailed lists. */
+  handle?: string;
 }
+
+/** Check if a string matches a given social platform (case-insensitive). */
+export const isPlatform = (val: string, platform: SocialPlatform): boolean => {
+  const v = val.toLowerCase();
+  if (platform === "twitter") return v === "twitter" || v === "x";
+  return v === platform;
+};
 
 export const SITE = {
   /** Absolute origin of the deployed site. No trailing slash. */
@@ -32,6 +52,7 @@ export const SITE = {
 
 export const AUTHOR = {
   name: "Stephane Mensah",
+  role: "Software Engineer & Writer",
   url: "https://waptik.xyz",
   twitter: "@_waptik",
   /** Path to author avatar image, relative to public/. */
@@ -43,17 +64,50 @@ export const AUTHOR = {
 
 export const NAV: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "Projects", href: "/projects" },
   { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
+  { label: "Uses", href: "/uses" },
   { label: "Tags", href: "/tags" },
 ];
 
 export const SOCIAL: SocialLink[] = [
-  { label: "GitHub", href: "https://github.com/waptik" },
-  { label: "Twitter", href: "https://twitter.com/_waptik" },
-  { label: "Bluesky", href: "https://bsky.app/profile/waptik.xyz" },
-  { label: "YouTube", href: "https://youtube.com/@_waptik" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/waptik" },
+  {
+    platform: "github",
+    label: "GitHub",
+    href: "https://github.com/waptik",
+    handle: "waptik",
+  },
+  {
+    platform: "twitter",
+    label: "Twitter",
+    href: "https://twitter.com/_waptik",
+    handle: "@_waptik",
+  },
+  {
+    platform: "bluesky",
+    label: "Bluesky",
+    href: "https://bsky.app/profile/waptik.xyz",
+    handle: "waptik.xyz",
+  },
+  {
+    platform: "telegram",
+    label: "Telegram",
+    href: "https://t.me/waptik",
+    handle: "@waptik",
+  },
+  {
+    platform: "youtube",
+    label: "YouTube",
+    href: "https://youtube.com/@_waptik",
+    handle: "@_waptik",
+  },
+  {
+    platform: "linkedin",
+    label: "LinkedIn",
+    href: "https://linkedin.com/in/waptik",
+    handle: "waptik",
+  },
 ];
 
 export const BLOG = {

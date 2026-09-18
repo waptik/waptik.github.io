@@ -2,25 +2,15 @@
 import { SITE } from "../config";
 ---
 
-<footer>
+<footer
+  class="text-sm my-4 mx-auto max-w-[1400px] py-4 px-8 text-center w-full text-text-secondary"
+>
   <span>
-    &copy; {new Date().getFullYear()}
-    {SITE.title}. Powered by <a
+    &copy; {new Date().getFullYear()} {SITE.title}. Powered by <a
       href="https://astro.build"
       target="_blank"
-      rel="noopener">Astro</a
+      rel="noopener"
+      class="underline hover:text-primary">Astro</a
     >.
   </span>
 </footer>
-
-<style>
-  footer {
-    color: var(--text-secondary);
-    font-size: 0.8em;
-    margin: 1em auto;
-    max-width: 1400px;
-    padding: 1em 2em;
-    text-align: center;
-    width: 100%;
-  }
-</style>

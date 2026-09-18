@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
 import { render } from "astro:content";
+import readingTime from "reading-time";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("blog")).filter(
@@ -19,6 +20,7 @@ const { Content } = await render(post);
 const permalink = Astro.site
   ? `${Astro.site.href}blog/${post.id}/`
   : `/blog/${post.id}/`;
+const readingTimeEstimate = readingTime(post.body || "").text;
 ---
 
 <BlogPost
@@ -28,6 +30,7 @@ const permalink = Astro.site
   pubDate={post.data.pubDate}
   updatedDate={post.data.updatedDate}
   tags={post.data.tags}
+  readingTime={readingTimeEstimate}
 >
   <Content />
 </BlogPost>

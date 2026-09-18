@@ -15,8 +15,16 @@ const permalink = Astro.site ? `${Astro.site.href}about` : "/about";
 >
   <div class="container">
     <h1>About</h1>
-    <figure class="about-image">
-      <img src={AUTHOR.avatar} alt={AUTHOR.name} width="330" height="330" />
+    <figure
+      class="float-right max-w-[300px] -mt-12 -mr-28 mb-8 ml-8 max-[1020px]:float-none max-[1020px]:my-0 max-[1020px]:mx-auto max-[1020px]:mb-8"
+    >
+      <img
+        src={AUTHOR.avatar}
+        alt={AUTHOR.name}
+        width="330"
+        height="330"
+        class="rounded-full object-cover object-top aspect-square mb-6"
+      />
     </figure>
     <p>
       Hi! I'm {AUTHOR.name}, {AUTHOR.bio}
@@ -31,26 +39,3 @@ const permalink = Astro.site ? `${Astro.site.href}about` : "/about";
     </p>
   </div>
 </BaseLayout>
-
-<style>
-  .about-image {
-    float: right;
-    margin: -3em -7em 2em 2em;
-    max-width: 300px;
-  }
-
-  .about-image img {
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center top;
-    aspect-ratio: 1/1;
-    margin-bottom: 1.5em;
-  }
-
-  @media (max-width: 1020px) {
-    .about-image {
-      float: none;
-      margin: 0 auto 2em;
-    }
-  }
-</style>

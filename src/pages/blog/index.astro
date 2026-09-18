@@ -27,14 +27,19 @@ allPosts = allPosts.sort(
         const href = `/blog/${post.id}/`;
         return (
           <div>
-            {index !== 0 && <hr />}
+            {index !== 0 && <hr class="my-16 mx-auto" />}
             <div class="post-item">
-              <h2>
-                <a href={href}>{post.data.title}</a>
+              <h2 class="font-sans font-bold">
+                <a
+                  href={href}
+                  class="no-underline text-text-main hover:text-primary transition-colors"
+                >
+                  {post.data.title}
+                </a>
               </h2>
               <p>{post.data.description}</p>
-              <div class="post-item-footer">
-                <span class="post-item-date">
+              <div class="post-item-footer font-sans font-bold">
+                <span class="post-item-date text-left uppercase mr-4 text-text-secondary">
                   — {post.data.pubDate.toLocaleDateString()}
                 </span>
               </div>
@@ -45,22 +50,3 @@ allPosts = allPosts.sort(
     }
   </div>
 </BaseLayout>
-
-<style>
-  h2,
-  .post-item-footer {
-    font-family: var(--font-family-sans);
-    font-weight: 700;
-  }
-
-  .post-item-date {
-    color: var(--text-secondary);
-    text-align: left;
-    text-transform: uppercase;
-    margin-right: 16px;
-  }
-
-  hr {
-    margin: 60px auto;
-  }
-</style>

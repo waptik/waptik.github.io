@@ -33,6 +33,7 @@ export const SITE = {
 export const AUTHOR = {
   name: "Stephane Mensah",
   url: "https://waptik.xyz",
+  twitter: "@_waptik",
   /** Path to author avatar image, relative to public/. */
   avatar: "/avatar.jpg",
   /** One or two sentences. Shown on /about and in structured data. */

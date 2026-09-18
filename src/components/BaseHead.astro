@@ -1,46 +1,159 @@
 ---
-import "../styles/fonts.css";
-import "../styles/global.css";
-import "../styles/tailwind.css";
-import { SITE } from "../config";
+import { SITE, AUTHOR } from "../config";
+
+export interface ArticleMeta {
+  publishedTime: string;
+  modifiedTime?: string;
+  tags: string[];
+}
 
 export interface Props {
   title: string;
   description: string;
-  permalink: string;
+  permalink?: string;
+  ogImage?: string;
+  article?: ArticleMeta;
 }
 
-const { title, description, permalink } = Astro.props;
-const socialUrl = Astro.site
-  ? `${Astro.site.href}${SITE.defaultOgImage}`
-  : SITE.defaultOgImage;
+const { title, description, permalink, ogImage, article } = Astro.props;
+
+const canonical = permalink
+  ? new URL(permalink, Astro.site ?? SITE.url)
+  : new URL(Astro.url.pathname, Astro.site ?? SITE.url);
+const image = new URL(ogImage ?? SITE.defaultOgImage, Astro.site ?? SITE.url);
+
+const person = {
+  "@type": "Person",
+  name: AUTHOR.name,
+  url: AUTHOR.url,
+};
+
+const structuredData = article
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: title,
+      description,
+      url: canonical.href,
+      image: image.href,
+      datePublished: article.publishedTime,
+      dateModified: article.modifiedTime ?? article.publishedTime,
+      keywords: article.tags?.join(", "),
+      inLanguage: SITE.lang,
+      author: person,
+      publisher: person,
+      mainEntityOfPage: { "@type": "WebPage", "@id": canonical.href },
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: SITE.title,
+      description: SITE.description,
+      url: SITE.url,
+      inLanguage: SITE.lang,
+      author: person,
+    };
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width" />
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
 
-<!-- Primary Meta Tags -->
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<!-- Canonical & Title -->
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+<meta name="author" content={AUTHOR.name} />
+<link rel="canonical" href={canonical.href} />
+
+<!-- Font Preloads -->
+<link
+  rel="preload"
+  href="/fonts/merriweather-regular.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link
+  rel="preload"
+  href="/fonts/fira-sans-bold.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+
+<!-- RSS Feed -->
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`${SITE.title} — ${SITE.tagline}`}
+  href={new URL("rss.xml", Astro.site ?? SITE.url).href}
+/>
+
+<!-- Theme Color -->
+<meta
+  name="theme-color"
+  content="#ffffff"
+  media="(prefers-color-scheme: light)"
+/>
+<meta
+  name="theme-color"
+  content="#202122"
+  media="(prefers-color-scheme: dark)"
+/>
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={permalink} />
+<meta property="og:type" content={article ? "article" : "website"} />
+<meta property="og:url" content={canonical.href} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={socialUrl} />
+<meta property="og:image" content={image.href} />
+<meta property="og:site_name" content={SITE.title} />
+<meta property="og:locale" content={SITE.locale} />
+
+{
+  article && (
+    <>
+      <meta
+        property="article:published_time"
+        content={article.publishedTime}
+      />
+      {article.modifiedTime && (
+        <meta
+          property="article:modified_time"
+          content={article.modifiedTime}
+        />
+      )}
+      <meta property="article:author" content={AUTHOR.name} />
+      {article.tags?.map((tag) => (
+        <meta property="article:tag" content={tag} />
+      ))}
+    </>
+  )
+}
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={permalink} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={socialUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonical.href} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image.href} />
+<meta name="twitter:creator" content={AUTHOR.twitter} />
+<meta name="twitter:site" content={AUTHOR.twitter} />
 
-<!-- This is intentionally inlined to avoid FOUC -->
+<!-- Structured Data (JSON-LD) -->
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify(structuredData)}
+/>
+
+<!-- Theme initialization script (anti-FOUC) -->
 <script is:inline>
   const root = document.documentElement;
   const theme = localStorage.getItem("theme");

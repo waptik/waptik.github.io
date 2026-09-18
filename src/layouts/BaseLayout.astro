@@ -1,51 +1,51 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
+import "../styles/tailwind.css";
+
+import BaseHead, { type ArticleMeta } from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
 export interface Props {
   title: string;
   description: string;
-  permalink: string;
+  permalink?: string;
   current?: string;
+  hideFooter?: boolean;
+  ogImage?: string;
+  article?: ArticleMeta;
 }
-const { title, description, permalink, current } = Astro.props;
+const {
+  title,
+  description,
+  permalink,
+  current,
+  hideFooter = false,
+  ogImage,
+  article,
+} = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} permalink={permalink} />
+    <BaseHead
+      title={title}
+      description={description}
+      permalink={permalink}
+      ogImage={ogImage}
+      article={article}
+    />
   </head>
   <body>
-    <div class="layout">
+    <div class="flex flex-col min-h-screen">
       <Header current={current} />
 
-      <main>
+      <main
+        class="flex-1 relative mx-auto max-w-[1400px] py-4 px-8 max-sm:px-4 box-border w-full flex flex-col"
+      >
         <slot />
       </main>
 
-      <Footer />
+      {!hideFooter && <Footer />}
     </div>
   </body>
 </html>
-
-<style>
-  .layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    min-height: 100vh;
-  }
-
-  main {
-    flex: 1;
-    position: relative;
-    margin: 0 auto;
-    max-width: 1400px;
-    padding: 1em 2em;
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-</style>

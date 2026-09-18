@@ -141,6 +141,15 @@ Consult these guides before working on related tasks:
 - **DO NOT** hardcode duplicate post IDs or render posts in the index sidebar that are already in the main feed.
 - **DO NOT** add redundant "View all" links to `RecentPostsWidget`.
 
+### Image Rendering & Assets Architecture
+
+#### ✅ WHAT TO DO
+- **Always use Astro's `<Image />` component** from `astro:assets` (`import { Image } from "astro:assets";`) when rendering images across all Astro pages and components.
+- Specify explicit `width`, `height`, and `alt` attributes to prevent Cumulative Layout Shift (CLS) and leverage Astro's image optimization pipeline.
+
+#### ❌ WHAT NOT TO DO
+- **DO NOT** use raw HTML `<img>` tags in `.astro` components.
+
 ---
 
 ## Standard Verification Commands (When Instructed)

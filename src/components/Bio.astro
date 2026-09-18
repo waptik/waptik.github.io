@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { AUTHOR } from "../config";
 import SocialLinks from "./SocialLinks.astro";
 ---
@@ -6,11 +7,11 @@ import SocialLinks from "./SocialLinks.astro";
 <div
   class="my-8 p-6 rounded-2xl border border-border bg-border/5 flex flex-col sm:flex-row gap-5 items-center sm:items-start text-center sm:text-left"
 >
-  <img
+  <Image
     src={AUTHOR.avatar}
     alt={AUTHOR.name}
-    width="64"
-    height="64"
+    width={64}
+    height={64}
     loading="lazy"
     decoding="async"
     class="w-16 h-16 rounded-full object-cover shrink-0 ring-2 ring-primary/40 -rotate-3 hover:rotate-0 transition-transform duration-300"

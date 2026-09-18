@@ -71,9 +71,12 @@ const formattedTitle = isHome
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Favicon -->
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
+<!-- Favicons & App Manifest -->
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
+<link rel="icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
 
 <!-- Font Preloads -->
 <link
@@ -105,12 +108,12 @@ const formattedTitle = isHome
 <!-- Theme Color -->
 <meta
   name="theme-color"
-  content="#fafafb"
+  content="#ffffff"
   media="(prefers-color-scheme: light)"
 />
 <meta
   name="theme-color"
-  content="#1a1a1c"
+  content="#0f172a"
   media="(prefers-color-scheme: dark)"
 />
 

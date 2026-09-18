@@ -1,20 +1,18 @@
 ---
 import { SITE } from "../config";
+import { LogomarkIcon } from "./icons";
 ---
 
 <a
   href="/"
-  class="flex items-center gap-2.5 font-sans font-bold text-lg text-text-main hover:text-primary transition-colors no-underline group shrink-0"
+  class="group flex items-center gap-2 font-sans font-bold text-lg text-text-main hover:text-primary transition-all duration-500 no-underline shrink-0 rounded-lg hover:scale-[101%] active:scale-[99%]"
   aria-label={`${SITE.title} Home`}
 >
-  <img
-    alt={`${SITE.title} Logo`}
-    src="/assets/logo.webp"
-    width="48"
-    height="32"
-    class="block h-7 w-auto transition-transform duration-300 group-hover:scale-105"
+  <LogomarkIcon
+    size={34}
+    class="-rotate-12 group-hover:-rotate-3 transition-transform duration-500 ease-out"
   />
-  <span class="hidden min-[480px]:inline-block text-base tracking-tight font-bold">
+  <span class="inline-block text-base tracking-tight font-bold">
     {SITE.title}
   </span>
 </a>

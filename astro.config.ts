@@ -4,10 +4,12 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { SITE } from "./src/config";
 
+import icon from "astro-icon";
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE.url,
-  integrations: [mdx(), sitemap()],
+  integrations: [mdx(), sitemap(), icon()],
   markdown: {
     shikiConfig: {
       themes: {

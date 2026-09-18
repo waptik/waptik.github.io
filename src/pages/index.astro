@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Sidebar from "../components/Sidebar.astro";
@@ -97,11 +98,11 @@ const featuredProject = getFeaturedProject();
                 class="w-full md:w-5/12 rounded-xl overflow-hidden border border-border shadow-sm block group shrink-0 relative bg-border/10"
                 aria-label={`View ${featuredProject.title} details`}
               >
-                <img
+                <Image
                   src={featuredProject.image}
                   alt={`${featuredProject.title} screenshot`}
-                  width="480"
-                  height="270"
+                  width={480}
+                  height={270}
                   loading="eager"
                   fetchpriority="high"
                   class="w-full aspect-[16/10] object-cover object-top transition-transform duration-500 group-hover:scale-105"

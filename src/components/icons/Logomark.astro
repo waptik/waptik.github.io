@@ -1,0 +1,27 @@
+---
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  size?: number | string;
+  width?: number | string;
+  height?: number | string;
+  class?: string;
+}
+
+const {
+  size = 36,
+  width = size,
+  height = size,
+  class: className = "",
+  ...props
+} = Astro.props;
+---
+
+<Icon
+  name="logomark"
+  width={width}
+  height={height}
+  class={className}
+  aria-hidden="true"
+  {...props}
+/>

@@ -82,9 +82,11 @@ const { current = "" } = Astro.props;
     const applyTheme = (dark: boolean) => {
       if (dark) {
         document.documentElement.classList.add("theme-dark");
+        document.documentElement.setAttribute("data-pf-theme", "dark");
         button.setAttribute("aria-label", "Switch to light mode");
       } else {
         document.documentElement.classList.remove("theme-dark");
+        document.documentElement.removeAttribute("data-pf-theme");
         button.setAttribute("aria-label", "Switch to dark mode");
       }
     };

@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { AUTHOR } from "../config";
+import Search from "./Search.astro";
 import SocialLinks from "./SocialLinks.astro";
 import ProjectWidget from "./ProjectWidget.astro";
 import RecentPostsWidget from "./RecentPostsWidget.astro";
@@ -8,6 +9,7 @@ import RecentPostsWidget from "./RecentPostsWidget.astro";
 import type { Post } from "../utils/posts";
 
 export interface Props {
+  showSearch?: boolean;
   showBio?: boolean;
   showConnect?: boolean;
   showProject?: boolean;
@@ -20,6 +22,7 @@ export interface Props {
 }
 
 const {
+  showSearch = true,
   showBio = true,
   showConnect = true,
   showProject = true,
@@ -40,6 +43,8 @@ const {
   aria-label="Sidebar"
 >
   <div class="sticky top-8 flex flex-col gap-8">
+    {showSearch && <Search />}
+
     {
       showBio && (
         <div class="flex flex-col gap-3">

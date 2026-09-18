@@ -244,4 +244,56 @@
       font-size: 2.4em;
     }
   }
+
+  /* Pagefind 1.5.0 Component-UI Design & Monochromatic Theme */
+  :root {
+    --pf-text: var(--text-main);
+    --pf-text-secondary: var(--text-secondary);
+    --pf-text-muted: var(--text-secondary);
+    --pf-background: var(--background-body);
+    --pf-border: var(--border-color);
+    --pf-border-focus: var(--text-main);
+    --pf-hover: color-mix(in oklch, var(--border-color) 40%, transparent);
+    --pf-mark: var(--text-main);
+    --pf-font: var(--font-sans);
+    --pf-border-radius: 8px;
+    --pf-input-height: 38px;
+    --pf-searchbox-max-width: 100%;
+    --pf-outline-focus: var(--text-main);
+    --pf-shadow-md: 0 8px 24px -4px color-mix(in oklch, var(--text-main) 12%, transparent);
+  }
+
+  .theme-dark,
+  [data-pf-theme="dark"] {
+    --pf-text: var(--text-main);
+    --pf-text-secondary: var(--text-secondary);
+    --pf-text-muted: var(--text-secondary);
+    --pf-background: var(--background-body);
+    --pf-border: var(--border-color);
+    --pf-border-focus: var(--text-main);
+    --pf-hover: color-mix(in oklch, var(--border-color) 50%, transparent);
+    --pf-mark: var(--text-main);
+    --pf-outline-focus: var(--text-main);
+    --pf-shadow-md: 0 8px 24px -4px color-mix(in oklch, black 50%, transparent);
+  }
+
+  pagefind-searchbox {
+    width: 100%;
+  }
+
+  /* Custom styling overrides for Pagefind Searchbox */
+  pagefind-searchbox mark {
+    background-color: color-mix(in oklch, var(--text-main) 18%, transparent);
+    color: var(--text-main);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  pagefind-searchbox .pf-searchbox-input {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  pagefind-searchbox .pf-searchbox-input:focus {
+    box-shadow: 0 0 0 1px var(--text-main);
+  }
 }

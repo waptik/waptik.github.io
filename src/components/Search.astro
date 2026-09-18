@@ -1,0 +1,26 @@
+---
+import PagefindConfig from "astro-pagefind/components/PagefindConfig.astro";
+
+export interface Props {
+  id?: string;
+  className?: string;
+  placeholder?: string;
+}
+
+const {
+  id = "search",
+  className = "",
+  placeholder = "Search...",
+} = Astro.props;
+---
+
+<div id={id} class:list={["search-wrapper relative w-full", className]} transition:persist>
+  <PagefindConfig />
+  <pagefind-searchbox
+    placeholder={placeholder}
+    shortcut="/"
+    debounce={150}
+    show-sub-results="true"
+  ></pagefind-searchbox>
+</div>
+

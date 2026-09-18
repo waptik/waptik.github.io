@@ -174,7 +174,9 @@ const formattedTitle = isHome
     (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)
   ) {
     root.classList.add("theme-dark");
+    root.setAttribute("data-pf-theme", "dark");
   } else {
     root.classList.remove("theme-dark");
+    root.removeAttribute("data-pf-theme");
   }
 </script>

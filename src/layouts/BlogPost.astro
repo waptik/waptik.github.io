@@ -5,6 +5,7 @@ import Bio from "../components/Bio.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import PostNav from "../components/PostNav.astro";
 import RecentPostsWidget from "../components/RecentPostsWidget.astro";
+import Search from "../components/Search.astro";
 import { BLOG } from "../config";
 import { tagSlug, type Post } from "../utils/posts";
 import { formatDate } from "../utils/date";
@@ -44,7 +45,7 @@ const hasToc =
   headings.filter((h) => h.depth >= 2 && h.depth <= 3).length >=
     BLOG.tocMinHeadings;
 
-const hasSidebar = hasToc || (relatedPosts && relatedPosts.length > 0);
+const hasSidebar = true;
 ---
 
 <BaseLayout
@@ -105,7 +106,7 @@ const hasSidebar = hasToc || (relatedPosts && relatedPosts.length > 0);
           )
         }
 
-        <article class="content">
+        <article class="content" data-pagefind-body>
           <slot />
         </article>
 
@@ -154,6 +155,7 @@ const hasSidebar = hasToc || (relatedPosts && relatedPosts.length > 0);
             aria-label="Sidebar"
           >
             <div class="sticky top-8 flex flex-col gap-8">
+              <Search />
               {hasToc && <TableOfContents headings={headings} />}
               {relatedPosts.length > 0 && (
                 <div class={hasToc ? "pt-6 border-t border-border" : ""}>
